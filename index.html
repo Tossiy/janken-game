@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>指示じゃんけん - 脳トレゲーム</title>
+    <title>指示だしじゃんけん - 脳トレゲーム</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@
         .container {
             max-width: 700px;
             margin: 0 auto;
-            padding: clamp(0.5vh, 2vh, 3vh) 8px;
+            padding: clamp(0.5vh, 1.5vh, 2vh) 8px;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -30,26 +30,26 @@
 
         .header {
             text-align: center;
-            margin-bottom: clamp(0.5vh, 1.5vh, 2vh);
+            margin-bottom: clamp(0.3vh, 1vh, 1.5vh);
             color: white;
             flex-shrink: 0;
         }
 
         .header h1 {
-            font-size: clamp(1rem, 3vh, 1.8rem);
-            margin-bottom: clamp(0.2vh, 0.8vh, 1vh);
+            font-size: clamp(1rem, 2.5vh, 1.6rem);
+            margin-bottom: clamp(0.2vh, 0.5vh, 0.8vh);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            font-size: clamp(0.6rem, 1.8vh, 1rem);
+            font-size: clamp(0.6rem, 1.5vh, 0.9rem);
             opacity: 0.9;
         }
 
         .game-container {
             background: white;
             border-radius: 15px;
-            padding: clamp(1vh, 2.5vh, 4vh);
+            padding: clamp(1vh, 2vh, 3vh);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             flex: 1;
             text-align: center;
@@ -58,40 +58,56 @@
             overflow: hidden;
         }
 
-        .score-board {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        /* スコアボードを1行にまとめ、ボタンも横に配置 */
+        .score-and-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: clamp(0.5vh, 1vh, 1.5vh);
             gap: clamp(0.5vh, 1vh, 1.5vh);
-            margin-bottom: clamp(0.5vh, 1vh, 2vh);
+            flex-wrap: wrap;
+        }
+
+        .score-board {
+            display: flex;
+            gap: clamp(1vh, 1.5vh, 2vh);
+            align-items: center;
         }
 
         .score-item {
             background: #f7fafc;
             border-radius: 6px;
-            padding: clamp(0.5vh, 1vh, 1.5vh);
+            padding: clamp(0.3vh, 0.8vh, 1.2vh);
             border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: clamp(0.3vh, 0.5vh, 0.8vh);
         }
 
         .score-value {
-            font-size: clamp(1rem, 3vh, 1.5rem);
+            font-size: clamp(0.9rem, 2.5vh, 1.3rem);
             font-weight: bold;
             color: #3182ce;
         }
 
         .score-label {
-            font-size: clamp(0.5rem, 1.5vh, 0.8rem);
+            font-size: clamp(0.5rem, 1.3vh, 0.7rem);
             color: #4a5568;
-            margin-top: clamp(0.2vh, 0.5vh, 0.8vh);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: clamp(0.5vh, 1vh, 1.5vh);
         }
 
         /* プログレスバーのスタイル */
         .progress-bar {
             width: 100%;
-            height: clamp(2vh, 3vh, 4vh);
+            height: clamp(1.5vh, 2.5vh, 3vh);
             background-color: #e2e8f0;
             border-radius: 10px;
             overflow: hidden;
-            margin: clamp(1vh, 2vh, 3vh) 0;
+            margin: clamp(0.5vh, 1vh, 1.5vh) 0;
             border: 2px solid #cbd5e0;
             position: relative;
         }
@@ -125,8 +141,8 @@
         }
 
         .opponent-hand {
-            font-size: clamp(2.5rem, 8vh, 5rem);
-            margin: clamp(1vh, 2vh, 3vh) 0;
+            font-size: clamp(2rem, 6vh, 4rem);
+            margin: clamp(0.8vh, 1.5vh, 2vh) 0;
             animation: bounce 0.5s ease;
             transition: all 0.3s ease;
         }
@@ -143,9 +159,9 @@
         }
 
         .instruction {
-            font-size: clamp(1.2rem, 4vh, 2rem);
+            font-size: clamp(1rem, 3vh, 1.8rem);
             font-weight: bold;
-            margin: clamp(1vh, 2vh, 3vh) 0;
+            margin: clamp(0.8vh, 1.5vh, 2vh) 0;
             color: #2d3748;
             transition: opacity 0.3s ease;
             text-align: center;
@@ -159,21 +175,15 @@
         .choices {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: clamp(1vh, 2vh, 2.5vh);
+            gap: clamp(0.8vh, 1.5vh, 2vh);
             max-width: min(500px, 90vw);
-            margin: clamp(1vh, 2vh, 3vh) auto;
+            margin: clamp(0.8vh, 1.5vh, 2vh) auto;
             transition: all 0.3s ease;
         }
 
         .choices.hidden-transition {
             opacity: 0;
             transform: scale(0.9);
-            visibility: hidden;
-        }
-
-        #back-button-container.hidden-transition {
-            opacity: 0;
-            transform: translateY(10px);
             visibility: hidden;
         }
 
@@ -186,15 +196,15 @@
             background-color: #f7fafc !important;
             border: 2px solid #e2e8f0 !important;
             border-radius: 10px !important;
-            padding: clamp(1vh, 2vh, 3vh) clamp(0.5vh, 1vh, 1.5vh) !important;
-            font-size: clamp(1.5rem, 5vh, 3rem) !important;
+            padding: clamp(0.8vh, 1.5vh, 2.5vh) clamp(0.5vh, 1vh, 1.5vh) !important;
+            font-size: clamp(1.2rem, 4vh, 2.5rem) !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
-            gap: clamp(0.5vh, 1vh, 1.5vh) !important;
+            gap: clamp(0.3vh, 0.8vh, 1.2vh) !important;
             box-sizing: border-box !important;
             width: 100% !important;
             height: auto !important;
-            min-height: clamp(8vh, 12vh, 15vh) !important;
+            min-height: clamp(6vh, 10vh, 12vh) !important;
             position: relative !important;
             outline: none !important;
             text-decoration: none !important;
@@ -229,16 +239,16 @@
         }
 
         .choice-label {
-            font-size: clamp(0.7rem, 2vh, 1.2rem);
+            font-size: clamp(0.6rem, 1.8vh, 1rem);
             font-weight: bold;
             color: #4a5568;
         }
 
         .result {
-            font-size: clamp(1rem, 3vh, 1.5rem);
+            font-size: clamp(0.9rem, 2.5vh, 1.3rem);
             font-weight: bold;
-            margin: clamp(1vh, 2vh, 3vh) auto;
-            padding: clamp(1vh, 1.5vh, 2vh);
+            margin: clamp(0.8vh, 1.5vh, 2vh) auto;
+            padding: clamp(0.8vh, 1.2vh, 1.8vh);
             border-radius: 10px;
             opacity: 0;
             transform: translateY(20px);
@@ -265,12 +275,12 @@
 
         .btn {
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: clamp(0.8rem, 2.5vh, 1.2rem);
-            padding: clamp(1vh, 2vh, 2.5vh) clamp(2vh, 3vh, 4vh);
-            margin: clamp(0.5vh, 1vh, 1.5vh);
+            font-size: clamp(0.7rem, 2vh, 1rem);
+            padding: clamp(0.8vh, 1.5vh, 2vh) clamp(1.5vh, 2.5vh, 3vh);
+            margin: 0;
         }
 
         .start-btn {
@@ -317,22 +327,22 @@
         .explanation {
             background: #ebf8ff;
             border-radius: 10px;
-            padding: clamp(1vh, 2vh, 2.5vh);
+            padding: clamp(1vh, 1.5vh, 2vh);
             margin: clamp(0.5vh, 1vh, 1.5vh) 0;
             border: 2px solid #3182ce;
-            font-size: clamp(0.7rem, 2vh, 1rem);
+            font-size: clamp(0.7rem, 1.8vh, 0.9rem);
         }
 
         .explanation p {
             color: #2d3748;
             line-height: 1.4;
-            margin-bottom: clamp(0.5vh, 1vh, 1.2vh);
+            margin-bottom: clamp(0.5vh, 0.8vh, 1vh);
         }
 
         .current-difficulty {
-            font-size: clamp(0.6rem, 1.8vh, 0.9rem);
+            font-size: clamp(0.6rem, 1.6vh, 0.8rem);
             color: #666;
-            margin-bottom: clamp(1vh, 2vh, 2.5vh);
+            margin-bottom: clamp(1vh, 1.5vh, 2vh);
         }
 
         .hidden {
@@ -351,32 +361,32 @@
         .final-result-content {
             display: flex;
             flex-direction: column;
-            gap: clamp(1vh, 2vh, 2.5vh);
-            padding: clamp(1vh, 2vh, 3vh) 0;
+            gap: clamp(1vh, 1.5vh, 2vh);
+            padding: clamp(1vh, 1.5vh, 2.5vh) 0;
         }
 
         .result-summary {
             background: #f0fff4;
             border-radius: 10px;
-            padding: clamp(1vh, 2vh, 2.5vh);
+            padding: clamp(1vh, 1.5vh, 2vh);
             border: 2px solid #68d391;
-            font-size: clamp(0.8rem, 2.5vh, 1.2rem);
+            font-size: clamp(0.8rem, 2.2vh, 1.1rem);
         }
 
         .record-section {
             background: #fff5f5;
             border-radius: 10px;
-            padding: clamp(1vh, 1.5vh, 2vh);
+            padding: clamp(1vh, 1.2vh, 1.8vh);
             border: 2px solid #fc8181;
-            font-size: clamp(0.7rem, 2.2vh, 1rem);
+            font-size: clamp(0.7rem, 2vh, 0.9rem);
         }
 
         .button-group {
             display: flex;
             justify-content: center;
-            gap: clamp(1vh, 2vh, 2.5vh);
+            gap: clamp(1vh, 1.5vh, 2vh);
             flex-wrap: wrap;
-            margin-top: clamp(1vh, 2vh, 2.5vh);
+            margin-top: clamp(1vh, 1.5vh, 2vh);
         }
 
         /* 初期状態で結果画面を確実に非表示 */
@@ -388,161 +398,69 @@
             display: flex;
         }
 
-        /* PC・大画面タブレット用 */
-        @media (min-width: 1024px) {
-            .container {
-                padding: 3vh 20px;
-            }
-
-            .game-container {
-                padding: 4vh;
-            }
-
-            .opponent-hand {
-                font-size: 5rem;
-                margin: 3vh 0;
-            }
-
-            .instruction {
-                font-size: 2rem;
-                margin: 3vh 0;
-            }
-
-            .game-choice-button {
-                min-height: 15vh !important;
-                font-size: 3rem !important;
-                padding: 3vh 1.5vh !important;
-            }
-
-            .choice-label {
-                font-size: 1.2rem;
-            }
-
-            .btn {
-                font-size: 1.2rem;
-                padding: 2.5vh 4vh;
-            }
-
-            .start-btn {
-                font-size: 1.5rem;
-                padding: 3vh 5vh;
-            }
-
-            .score-value {
-                font-size: 1.5rem;
-            }
-
-            .score-label {
-                font-size: 0.8rem;
-            }
-        }
-
-        /* 中画面タブレット用 */
-        @media (min-width: 768px) and (max-width: 1023px) {
-            .container {
-                padding: 2vh 15px;
-            }
-
-            .game-container {
-                padding: 3vh;
-            }
-
-            .opponent-hand {
-                font-size: 4rem;
-                margin: 2.5vh 0;
-            }
-
-            .instruction {
-                font-size: 1.7rem;
-                margin: 2.5vh 0;
-            }
-
-            .game-choice-button {
-                min-height: 13vh !important;
-                font-size: 2.5rem !important;
-                padding: 2.5vh 1.2vh !important;
-            }
-
-            .choice-label {
-                font-size: 1rem;
-            }
-
-            .btn {
-                font-size: 1rem;
-                padding: 2vh 3.5vh;
-            }
-
-            .start-btn {
-                font-size: 1.3rem;
-                padding: 2.5vh 4.5vh;
-            }
-
-            .score-value {
-                font-size: 1.3rem;
-            }
-
-            .score-label {
-                font-size: 0.7rem;
-            }
-        }
-
-        /* スマホ用 */
+        /* レスポンシブ対応の調整 */
         @media (max-width: 767px) {
+            .score-and-controls {
+                flex-direction: column;
+                gap: clamp(0.5vh, 1vh, 1.5vh);
+            }
+            
+            .score-board {
+                justify-content: center;
+            }
+            
+            .control-buttons {
+                justify-content: center;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .score-and-controls {
+                flex-direction: row;
+            }
+        }
+
+        /* フルスクリーン対応の高さ調整 */
+        @media (max-height: 600px) {
             .container {
                 padding: 0.5vh 8px;
             }
-
+            
+            .header {
+                margin-bottom: 0.5vh;
+            }
+            
+            .header h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.3vh;
+            }
+            
+            .header p {
+                font-size: 0.7rem;
+            }
+            
             .game-container {
-                padding: 1.5vh;
+                padding: 1vh;
             }
-
+            
             .opponent-hand {
-                font-size: clamp(2rem, 6vh, 3rem);
-                margin: 1.5vh 0;
+                font-size: 2.5rem;
+                margin: 0.5vh 0;
             }
-
+            
             .instruction {
-                font-size: clamp(1rem, 3.5vh, 1.4rem);
-                margin: 1.5vh 0;
+                font-size: 1.2rem;
+                margin: 0.5vh 0;
             }
-
+            
             .game-choice-button {
-                font-size: clamp(1.2rem, 4vh, 1.8rem) !important;
-                padding: 1.5vh 1vh !important;
-                min-height: 8vh !important;
+                min-height: 7vh !important;
+                font-size: 1.8rem !important;
+                padding: 1vh 0.8vh !important;
             }
-
+            
             .choice-label {
-                font-size: clamp(0.6rem, 1.5vh, 0.8rem);
-            }
-
-            .btn {
-                font-size: clamp(0.7rem, 2vh, 0.9rem);
-                padding: 1.2vh 2.5vh;
-                margin: 0.5vh;
-            }
-
-            .start-btn {
-                font-size: clamp(0.8rem, 2.3vh, 1.1rem);
-                padding: 1.8vh 3.5vh;
-            }
-
-            .explanation {
-                padding: 1.5vh;
-                font-size: clamp(0.6rem, 1.8vh, 0.8rem);
-            }
-
-            .score-value {
-                font-size: clamp(0.9rem, 2.5vh, 1.1rem);
-            }
-
-            .score-label {
-                font-size: clamp(0.5rem, 1.3vh, 0.6rem);
-            }
-
-            .progress-bar {
-                height: 2.5vh;
-                margin: 1.5vh 0;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -550,15 +468,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>✋ 指示じゃんけん</h1>
+            <h1>✋ 指示だしじゃんけん</h1>
             <p>指示に従って正しい手を選んでください</p>
         </div>
 
         <div class="game-container">
             <!-- ゲーム説明（簡略化） -->
             <div id="explanation" class="explanation">
-                <p>🎯 相手の手と「勝って/負けて」の指示が出ます。10秒以内に正しい手を選んでください（10問）</p>
-                <p>🏆 最短時間と最高正解率を目指しましょう！</p>
+                <p>🎯 相手の手と「勝って/負けて」の指示が出ます。</p>
+                <p>10秒以内に正しい手を選んでください（10問）</p>
+                <p>🏆 最短時間で１０問正解を目指しましょう！</p>
             </div>
 
             <!-- メイン画面（難易度選択+スタート） -->
@@ -582,15 +501,23 @@
 
             <!-- ゲーム画面 -->
             <div id="game-area" class="hidden">
-                <!-- ゲーム中スコアボード（2項目のみ） -->
-                <div class="score-board">
-                    <div class="score-item">
-                        <div class="score-value" id="remaining-count">10</div>
-                        <div class="score-label">残り問題</div>
+                <!-- スコアボードとコントロールボタンを1行に配置 -->
+                <div class="score-and-controls">
+                    <!-- ゲーム中スコアボード（1行に集約） -->
+                    <div class="score-board">
+                        <div class="score-item">
+                            <div class="score-value" id="remaining-count">10</div>
+                            <div class="score-label">残り問題</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value" id="game-correct-count">0</div>
+                            <div class="score-label">正解数</div>
+                        </div>
                     </div>
-                    <div class="score-item">
-                        <div class="score-value" id="game-correct-count">0</div>
-                        <div class="score-label">正解数</div>
+
+                    <!-- コントロールボタン -->
+                    <div class="control-buttons">
+                        <button class="btn btn-secondary" id="back-to-main-btn">メインに戻る</button>
                     </div>
                 </div>
 
@@ -612,11 +539,6 @@
 
                 <!-- 結果表示 -->
                 <div id="result" class="result"></div>
-
-                <!-- メインに戻るボタンのみ -->
-                <div id="back-button-container" style="display: flex; justify-content: center; margin: clamp(0.5vh, 1vh, 1.5vh) 0; transition: all 0.3s ease;">
-                    <button class="btn btn-secondary" id="back-to-main-btn">メインに戻る</button>
-                </div>
             </div>
 
             <!-- 最終結果（結果画面でのみ表示） -->
@@ -1012,11 +934,9 @@
                 
                 const choicesElement = document.querySelector('.choices');
                 const opponentHandElement = document.getElementById('opponent-hand');
-                const backButtonContainer = document.getElementById('back-button-container');
                 
                 if (choicesElement) choicesElement.classList.add('hidden-transition');
                 if (opponentHandElement) opponentHandElement.classList.add('hidden-transition');
-                if (backButtonContainer) backButtonContainer.classList.add('hidden-transition');
                 
                 generateChoiceButtons();
                 nextRound();
@@ -1088,7 +1008,6 @@
                 const instructionElement = document.getElementById('instruction');
                 const choicesElement = document.querySelector('.choices');
                 const opponentHandElement = document.getElementById('opponent-hand');
-                const backButtonContainer = document.getElementById('back-button-container');
                 
                 if (instructionElement) {
                     instructionElement.classList.add('hidden-transition');
@@ -1099,7 +1018,6 @@
                     opponentHandElement.classList.add('hidden-transition');
                     opponentHandElement.textContent = '';
                 }
-                if (backButtonContainer) backButtonContainer.classList.add('hidden-transition');
                 
                 setTimeout(() => {
                     if (!gameState.isPlaying) return;
@@ -1123,7 +1041,6 @@
                     }
                     
                     if (choicesElement) choicesElement.classList.remove('hidden-transition');
-                    if (backButtonContainer) backButtonContainer.classList.remove('hidden-transition');
                 }, 1000);
 
                 const resultElement = document.getElementById('result');
