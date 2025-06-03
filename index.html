@@ -510,6 +510,16 @@
                             style="font-size: 0.7rem; padding: 5px 10px;">
                         記録クリア
                     </button>
+                    <button onclick="showDebugInfo()" 
+                            class="btn btn-secondary" 
+                            style="font-size: 0.7rem; padding: 5px 10px;">
+                        デバッグ表示
+                    </button>
+                </div>
+                
+                <!-- iPhone用デバッグ表示エリア -->
+                <div id="debug-display" style="display: none; background: #f0f0f0; border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin: 10px 0; font-size: 0.7rem; text-align: left;">
+                    <div id="debug-content"></div>
                 </div>
             </div>
 
@@ -728,6 +738,49 @@
         const handArray = ['rock', 'paper', 'scissors'];
         const normalModeOrder = ['rock', 'scissors', 'paper'];
 
+        // iPhone用デバッグ表示機能
+        window.showDebugInfo = function() {
+            const debugDisplay = document.getElementById('debug-display');
+            const debugContent = document.getElementById('debug-content');
+            
+            if (!debugDisplay || !debugContent) return;
+            
+            let info = '<strong>🔍 iPhone デバッグ情報</strong><br><br>';
+            
+            // ブラウザ情報
+            info += '<strong>📱 ブラウザ:</strong><br>';
+            info += navigator.userAgent + '<br><br>';
+            
+            // localStorage サポート確認
+            info += '<strong>💾 ストレージサポート:</strong><br>';
+            info += 'localStorage: ' + (typeof(Storage) !== "undefined" ? '✅ サポート' : '❌ 非サポート') + '<br>';
+            
+            // プライベートブラウジング検出
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                info += 'localStorage書き込み: ✅ 正常<br>';
+            } catch (e) {
+                info += 'localStorage書き込み: ❌ エラー (' + e.message + ')<br>';
+            }
+            
+            // 現在の記録
+            info += '<br><strong>📊 現在の記録:</strong><br>';
+            info += JSON.stringify(bestRecords, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;') + '<br><br>';
+            
+            // 保存されているデータ
+            info += '<strong>💿 保存データ:</strong><br>';
+            try {
+                const saved = localStorage.getItem('janken-game-records');
+                info += saved ? saved : '(データなし)';
+            } catch (e) {
+                info += 'エラー: ' + e.message;
+            }
+            
+            debugContent.innerHTML = info;
+            debugDisplay.style.display = debugDisplay.style.display === 'none' ? 'block' : 'none';
+        };
+
         // グローバルスコープに関数を公開（ボタンから呼び出すため）
         window.checkRecords = function() {
             console.log('=== 記録確認 ===');
@@ -744,7 +797,8 @@
                 console.error('localStorage アクセスエラー:', error);
             }
             
-            alert('コンソール（F12）で記録を確認してください');
+            // iPhone用にデバッグ表示も自動で開く
+            showDebugInfo();
         };
 
         window.clearRecords = function() {
@@ -811,7 +865,17 @@
                 // localStorageサポート確認
                 if (typeof(Storage) === "undefined") {
                     console.warn('localStorage がサポートされていません');
-                    alert('このブラウザでは記録保存がサポートされていません');
+                    alert('📱 このブラウザでは記録保存がサポートされていません');
+                    return;
+                }
+                
+                // プライベートブラウジング検出
+                try {
+                    localStorage.setItem('test', 'test');
+                    localStorage.removeItem('test');
+                } catch (e) {
+                    console.error('localStorage テストエラー:', e);
+                    alert('📱 プライベートブラウジングモードの可能性があります。通常モードでお試しください。');
                     return;
                 }
                 
@@ -829,11 +893,12 @@
                     console.log('✅ 保存成功');
                 } else {
                     console.error('❌ 保存失敗: データが一致しません');
+                    alert('📱 記録保存に失敗しました（データ不一致）');
                 }
                 
             } catch (error) {
                 console.error('記録の保存に失敗:', error);
-                alert('記録の保存に失敗しました: ' + error.message);
+                alert('📱 記録の保存に失敗しました: ' + error.message + '\n\n「デバッグ表示」ボタンで詳細を確認してください。');
             }
         }
 
