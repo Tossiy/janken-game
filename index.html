@@ -494,8 +494,22 @@
                 <div class="current-difficulty" id="current-difficulty">難易度を選択してください</div>
 
                 <!-- ゲームスタートボタン -->
-                <div style="display: flex; justify-content: center;">
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                     <button id="start-btn" class="start-btn btn" disabled>ゲームスタート</button>
+                </div>
+                
+                <!-- 記録確認ボタン（デバッグ用） -->
+                <div style="display: flex; justify-content: center; gap: 5px; margin-top: 10px; flex-wrap: wrap;">
+                    <button onclick="console.log('現在の記録:', bestRecords)" 
+                            class="btn btn-secondary" 
+                            style="font-size: 0.7rem; padding: 5px 10px;">
+                        記録確認
+                    </button>
+                    <button onclick="clearRecords()" 
+                            class="btn btn-secondary" 
+                            style="font-size: 0.7rem; padding: 5px 10px;">
+                        記録クリア
+                    </button>
                 </div>
             </div>
 
@@ -718,6 +732,7 @@
         function loadRecords() {
             try {
                 const saved = localStorage.getItem('janken-game-records');
+                console.log('保存されている記録:', saved); // デバッグ用
                 if (saved) {
                     const parsedRecords = JSON.parse(saved);
                     // 既存の構造を保持しながらマージ
@@ -729,6 +744,7 @@
                         perfectBestTime: parsedRecords.expert?.perfectBestTime || null,
                         perfectGames: parsedRecords.expert?.perfectGames || 0
                     };
+                    console.log('読み込まれた記録:', bestRecords); // デバッグ用
                 }
             } catch (error) {
                 console.warn('記録の読み込みに失敗:', error);
@@ -739,8 +755,55 @@
         function saveRecords() {
             try {
                 localStorage.setItem('janken-game-records', JSON.stringify(bestRecords));
+                console.log('記録を保存しました:', bestRecords); // デバッグ用
+                
+                // 保存確認
+                const verification = localStorage.getItem('janken-game-records');
+                console.log('保存確認:', verification); // デバッグ用
             } catch (error) {
                 console.warn('記録の保存に失敗:', error);
+            }
+        }
+
+        // 記録をクリアする関数（テスト用）
+        function clearRecords() {
+            try {
+                localStorage.removeItem('janken-game-records');
+                bestRecords = {
+                    normal: { perfectBestTime: null, perfectGames: 0 },
+                    expert: { perfectBestTime: null, perfectGames: 0 }
+                };
+                console.log('記録をクリアしました');
+                updateRecordDisplay();
+            } catch (error) {
+                console.warn('記録のクリアに失敗:', error);
+            }
+        }
+
+        // 記録表示を更新する関数
+        function updateRecordDisplay() {
+            const bestRecordSection = document.getElementById('best-record-section');
+            const currentDifficultyRecord = bestRecords[gameState.difficulty];
+            
+            if (currentDifficultyRecord && currentDifficultyRecord.perfectGames > 0 && currentDifficultyRecord.perfectBestTime !== null) {
+                if (bestRecordSection) {
+                    bestRecordSection.classList.remove('hidden');
+                    
+                    const perfectBestTimeElem = document.getElementById('perfect-best-time');
+                    const perfectGamesElem = document.getElementById('perfect-games');
+                    
+                    if (perfectBestTimeElem) {
+                        perfectBestTimeElem.textContent = currentDifficultyRecord.perfectBestTime + '秒';
+                    }
+                    
+                    if (perfectGamesElem) {
+                        perfectGamesElem.textContent = currentDifficultyRecord.perfectGames.toString();
+                    }
+                }
+            } else {
+                if (bestRecordSection) {
+                    bestRecordSection.classList.add('hidden');
+                }
             }
         }
 
@@ -1283,6 +1346,14 @@
                     }
                 }
                 
+                // 保存確認のログ出力
+                console.log('ゲーム終了時の記録:', {
+                    difficulty: gameState.difficulty,
+                    currentScore: gameState.correctAnswers,
+                    currentTime: totalTimeSeconds,
+                    savedRecords: bestRecords
+                });
+                
                 const recordUpdateElem = document.getElementById('record-update');
                 if (hasNewRecord) {
                     if (recordUpdateElem) {
@@ -1351,6 +1422,10 @@
                     finalResult.classList.add('hidden');
                     finalResult.classList.remove('show');
                 }
+                
+                // 記録保存のテスト（デバッグ用）
+                console.log('localStorage サポート:', typeof(Storage) !== "undefined");
+                console.log('初期記録:', bestRecords);
                 
                 // イベントリスナーを追加
                 const normalBtn = document.getElementById('normal-btn');
