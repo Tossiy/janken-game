@@ -114,7 +114,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #48bb78 0%, #38a169 50%, #e53e3e 100%);
+            background: linear-gradient(90deg, #48bb78 0%, #38a169 50%, #48bb78 100%);
             border-radius: 8px;
             transition: width 0.1s linear;
             width: 100%;
@@ -327,7 +327,7 @@
         .explanation {
             background: #ebf8ff;
             border-radius: 10px;
-            padding: clamp(1vh, 1.5vh, 2vh);
+            padding: clamp(0.8vh, 1.2vh, 1.5vh);
             margin: clamp(0.5vh, 1vh, 1.5vh) 0;
             border: 2px solid #3182ce;
             font-size: clamp(0.7rem, 1.8vh, 0.9rem);
@@ -340,7 +340,7 @@
         }
 
         .current-difficulty {
-            font-size: clamp(0.6rem, 1.6vh, 0.8rem);
+            font-size: clamp(0.7rem, 1.8vh, 0.9rem);
             color: #666;
             margin-bottom: clamp(1vh, 1.5vh, 2vh);
         }
@@ -475,9 +475,9 @@
         <div class="game-container">
             <!-- ゲーム説明（簡略化） -->
             <div id="explanation" class="explanation">
-                <p>🎯 相手の手と「勝って/負けて」の指示が出ます。</p>
+                <p>相手の手と「勝って/負けて」の指示が出ます。</p>
                 <p>10秒以内に正しい手を選んでください（10問）</p>
-                <p>🏆 最短時間で１０問正解を目指しましょう！</p>
+                <p>最短時間で１０問正解を目指しましょう！</p>
             </div>
 
             <!-- メイン画面（難易度選択+スタート） -->
@@ -714,13 +714,34 @@
         const handArray = ['rock', 'paper', 'scissors'];
         const normalModeOrder = ['rock', 'scissors', 'paper'];
 
-        // 記録管理（メモリ内のみ）
+        // 記録管理（localStorage使用）
         function loadRecords() {
-            // メモリ内のみで記録を管理
+            try {
+                const saved = localStorage.getItem('janken-game-records');
+                if (saved) {
+                    const parsedRecords = JSON.parse(saved);
+                    // 既存の構造を保持しながらマージ
+                    bestRecords.normal = {
+                        perfectBestTime: parsedRecords.normal?.perfectBestTime || null,
+                        perfectGames: parsedRecords.normal?.perfectGames || 0
+                    };
+                    bestRecords.expert = {
+                        perfectBestTime: parsedRecords.expert?.perfectBestTime || null,
+                        perfectGames: parsedRecords.expert?.perfectGames || 0
+                    };
+                }
+            } catch (error) {
+                console.warn('記録の読み込みに失敗:', error);
+                // エラーの場合はデフォルト値を使用
+            }
         }
 
         function saveRecords() {
-            // メモリ内の記録を更新
+            try {
+                localStorage.setItem('janken-game-records', JSON.stringify(bestRecords));
+            } catch (error) {
+                console.warn('記録の保存に失敗:', error);
+            }
         }
 
         // 難易度選択
@@ -1000,6 +1021,7 @@
                 const progressFill = document.getElementById('progress-fill');
                 if (progressFill) {
                     progressFill.style.width = '100%';
+                    progressFill.style.background = 'linear-gradient(90deg, #48bb78 0%, #38a169 50%, #48bb78 100%)';
                 }
                 
                 gameState.currentOpponentHand = handArray[Math.floor(Math.random() * 3)];
@@ -1067,6 +1089,7 @@
                 const progressFill = document.getElementById('progress-fill');
                 if (progressFill) {
                     progressFill.style.width = '100%';
+                    progressFill.style.background = 'linear-gradient(90deg, #48bb78 0%, #38a169 50%, #48bb78 100%)';
                 }
                 
                 function updateTimer() {
@@ -1081,6 +1104,18 @@
                     const percentage = (timeLeft / (totalTime * 1000)) * 100;
                     if (progressFill) {
                         progressFill.style.width = percentage + '%';
+                        
+                        // 残り時間に応じて色を変更
+                        if (percentage > 50) {
+                            // 緑色 (50%以上)
+                            progressFill.style.background = 'linear-gradient(90deg, #48bb78 0%, #38a169 50%, #48bb78 100%)';
+                        } else if (percentage > 20) {
+                            // 黄色 (20-50%)
+                            progressFill.style.background = 'linear-gradient(90deg, #f6ad55 0%, #ed8936 50%, #f6ad55 100%)';
+                        } else {
+                            // 赤色 (20%未満)
+                            progressFill.style.background = 'linear-gradient(90deg, #f56565 0%, #e53e3e 50%, #f56565 100%)';
+                        }
                     }
                     
                     if (timeLeft <= 0) {
