@@ -749,7 +749,21 @@
             
             // ブラウザ情報
             info += '<strong>📱 ブラウザ:</strong><br>';
-            info += navigator.userAgent + '<br><br>';
+            info += navigator.userAgent.substring(0, 100) + '...<br><br>';
+            
+            // 保存方式の判定
+            info += '<strong>💾 使用している保存方式:</strong><br>';
+            let storageMethod = 'URL保存';
+            try {
+                if (typeof(Storage) !== "undefined") {
+                    localStorage.setItem('test', 'test');
+                    localStorage.removeItem('test');
+                    storageMethod = 'localStorage';
+                }
+            } catch (e) {
+                // localStorage使用不可
+            }
+            info += storageMethod + '<br><br>';
             
             // localStorage サポート確認
             info += '<strong>💾 ストレージサポート:</strong><br>';
@@ -764,17 +778,32 @@
                 info += 'localStorage書き込み: ❌ エラー (' + e.message + ')<br>';
             }
             
+            // URL パラメータ確認
+            info += '<br><strong>🔗 URL パラメータ:</strong><br>';
+            const urlParams = new URLSearchParams(window.location.search);
+            const params = [];
+            for (let [key, value] of urlParams) {
+                params.push(key + '=' + value);
+            }
+            info += params.length > 0 ? params.join('<br>') : '(パラメータなし)';
+            info += '<br><br>';
+            
             // 現在の記録
-            info += '<br><strong>📊 現在の記録:</strong><br>';
+            info += '<strong>📊 現在の記録:</strong><br>';
             info += JSON.stringify(bestRecords, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;') + '<br><br>';
             
             // 保存されているデータ
-            info += '<strong>💿 保存データ:</strong><br>';
-            try {
-                const saved = localStorage.getItem('janken-game-records');
-                info += saved ? saved : '(データなし)';
-            } catch (e) {
-                info += 'エラー: ' + e.message;
+            if (storageMethod === 'localStorage') {
+                info += '<strong>💿 localStorage データ:</strong><br>';
+                try {
+                    const saved = localStorage.getItem('janken-game-records');
+                    info += saved ? saved : '(データなし)';
+                } catch (e) {
+                    info += 'エラー: ' + e.message;
+                }
+            } else {
+                info += '<strong>🔗 URLに記録保存済み</strong><br>';
+                info += 'このページをブックマークすると記録が保持されます';
             }
             
             debugContent.innerHTML = info;
@@ -804,13 +833,31 @@
         window.clearRecords = function() {
             console.log('=== 記録クリア ===');
             try {
-                localStorage.removeItem('janken-game-records');
+                // localStorage をクリア
+                try {
+                    localStorage.removeItem('janken-game-records');
+                    console.log('localStorage クリア完了');
+                } catch (e) {
+                    console.warn('localStorage クリア失敗:', e);
+                }
+                
+                // URL パラメータをクリア
+                const url = new URL(window.location);
+                url.searchParams.delete('nt'); // normal time
+                url.searchParams.delete('ng'); // normal games
+                url.searchParams.delete('et'); // expert time  
+                url.searchParams.delete('eg'); // expert games
+                window.history.replaceState({}, '', url);
+                console.log('URL パラメータ クリア完了');
+                
+                // メモリ上の記録をクリア
                 bestRecords = {
                     normal: { perfectBestTime: null, perfectGames: 0 },
                     expert: { perfectBestTime: null, perfectGames: 0 }
                 };
+                
                 console.log('記録をクリアしました');
-                alert('記録をクリアしました');
+                alert('📱 記録をクリアしました');
                 
                 // 表示も更新
                 const bestRecordSection = document.getElementById('best-record-section');
@@ -823,83 +870,160 @@
             }
         };
 
-        // 記録管理（localStorage使用）
-        function loadRecords() {
-            console.log('=== 記録読み込み開始 ===');
+        // URL パラメータを使った記録管理（iPhone対応）
+        function loadRecordsFromURL() {
+            console.log('=== URL から記録読み込み開始 ===');
             try {
-                // localStorageサポート確認
-                if (typeof(Storage) === "undefined") {
-                    console.warn('localStorage がサポートされていません');
-                    return;
-                }
+                const urlParams = new URLSearchParams(window.location.search);
                 
-                const saved = localStorage.getItem('janken-game-records');
-                console.log('保存されている記録:', saved);
+                // 通常モードの記録
+                const normalTime = urlParams.get('nt');
+                const normalGames = urlParams.get('ng');
                 
-                if (saved) {
-                    const parsedRecords = JSON.parse(saved);
-                    console.log('パース済み記録:', parsedRecords);
+                // 上級モードの記録
+                const expertTime = urlParams.get('et');
+                const expertGames = urlParams.get('eg');
+                
+                if (normalTime || normalGames || expertTime || expertGames) {
+                    console.log('URLから記録を復元:', {
+                        normal: { time: normalTime, games: normalGames },
+                        expert: { time: expertTime, games: expertGames }
+                    });
                     
-                    // 既存の構造を保持しながらマージ
                     bestRecords.normal = {
-                        perfectBestTime: parsedRecords.normal?.perfectBestTime || null,
-                        perfectGames: parsedRecords.normal?.perfectGames || 0
+                        perfectBestTime: normalTime ? parseInt(normalTime) : null,
+                        perfectGames: normalGames ? parseInt(normalGames) : 0
                     };
+                    
                     bestRecords.expert = {
-                        perfectBestTime: parsedRecords.expert?.perfectBestTime || null,
-                        perfectGames: parsedRecords.expert?.perfectGames || 0
+                        perfectBestTime: expertTime ? parseInt(expertTime) : null,
+                        perfectGames: expertGames ? parseInt(expertGames) : 0
                     };
-                    console.log('読み込まれた記録:', bestRecords);
-                } else {
-                    console.log('保存された記録がありません（初回起動）');
+                    
+                    console.log('復元された記録:', bestRecords);
                 }
             } catch (error) {
-                console.error('記録の読み込みに失敗:', error);
-                alert('記録の読み込みに失敗しました: ' + error.message);
+                console.error('URL記録読み込みエラー:', error);
             }
+        }
+        
+        function saveRecordsToURL() {
+            console.log('=== URL に記録保存開始 ===');
+            try {
+                const url = new URL(window.location);
+                
+                // 通常モードの記録
+                if (bestRecords.normal.perfectBestTime !== null) {
+                    url.searchParams.set('nt', bestRecords.normal.perfectBestTime.toString());
+                }
+                if (bestRecords.normal.perfectGames > 0) {
+                    url.searchParams.set('ng', bestRecords.normal.perfectGames.toString());
+                }
+                
+                // 上級モードの記録
+                if (bestRecords.expert.perfectBestTime !== null) {
+                    url.searchParams.set('et', bestRecords.expert.perfectBestTime.toString());
+                }
+                if (bestRecords.expert.perfectGames > 0) {
+                    url.searchParams.set('eg', bestRecords.expert.perfectGames.toString());
+                }
+                
+                // URLを更新（ページリロードなし）
+                window.history.replaceState({}, '', url);
+                console.log('URL更新完了:', url.toString());
+                
+                // ブックマーク用URLを表示
+                showBookmarkInfo(url.toString());
+                
+            } catch (error) {
+                console.error('URL記録保存エラー:', error);
+            }
+        }
+        
+        function showBookmarkInfo(url) {
+            // 記録保存完了の通知
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 0.9rem;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            `;
+            notification.innerHTML = '📱 記録をURLに保存しました！<br>このページをブックマークすると記録が保持されます';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 4000);
+        }
+
+        // 統合された記録管理関数
+        function loadRecords() {
+            console.log('=== 記録読み込み開始 ===');
+            
+            // まずlocalStorageから試す（PC用）
+            try {
+                if (typeof(Storage) !== "undefined") {
+                    const saved = localStorage.getItem('janken-game-records');
+                    console.log('localStorage からの読み込み:', saved);
+                    
+                    if (saved) {
+                        const parsedRecords = JSON.parse(saved);
+                        bestRecords.normal = {
+                            perfectBestTime: parsedRecords.normal?.perfectBestTime || null,
+                            perfectGames: parsedRecords.normal?.perfectGames || 0
+                        };
+                        bestRecords.expert = {
+                            perfectBestTime: parsedRecords.expert?.perfectBestTime || null,
+                            perfectGames: parsedRecords.expert?.perfectGames || 0
+                        };
+                        console.log('localStorage から復元:', bestRecords);
+                        return; // localStorage で読み込めた場合は終了
+                    }
+                }
+            } catch (error) {
+                console.warn('localStorage 読み込み失敗:', error);
+            }
+            
+            // localStorageが使えない場合はURLから読み込み（iPhone用）
+            loadRecordsFromURL();
         }
 
         function saveRecords() {
             console.log('=== 記録保存開始 ===');
+            
+            // まずlocalStorageに保存を試す（PC用）
             try {
-                // localStorageサポート確認
-                if (typeof(Storage) === "undefined") {
-                    console.warn('localStorage がサポートされていません');
-                    alert('📱 このブラウザでは記録保存がサポートされていません');
-                    return;
-                }
-                
-                // プライベートブラウジング検出
-                try {
+                if (typeof(Storage) !== "undefined") {
                     localStorage.setItem('test', 'test');
                     localStorage.removeItem('test');
-                } catch (e) {
-                    console.error('localStorage テストエラー:', e);
-                    alert('📱 プライベートブラウジングモードの可能性があります。通常モードでお試しください。');
-                    return;
+                    
+                    const dataToSave = JSON.stringify(bestRecords);
+                    localStorage.setItem('janken-game-records', dataToSave);
+                    console.log('localStorage に保存成功:', bestRecords);
+                    
+                    // 保存確認
+                    const verification = localStorage.getItem('janken-game-records');
+                    if (verification === dataToSave) {
+                        console.log('✅ localStorage 保存確認完了');
+                        return; // localStorage で保存できた場合は終了
+                    }
                 }
-                
-                const dataToSave = JSON.stringify(bestRecords);
-                console.log('保存するデータ:', dataToSave);
-                
-                localStorage.setItem('janken-game-records', dataToSave);
-                console.log('記録を保存しました:', bestRecords);
-                
-                // 保存確認
-                const verification = localStorage.getItem('janken-game-records');
-                console.log('保存確認:', verification);
-                
-                if (verification === dataToSave) {
-                    console.log('✅ 保存成功');
-                } else {
-                    console.error('❌ 保存失敗: データが一致しません');
-                    alert('📱 記録保存に失敗しました（データ不一致）');
-                }
-                
             } catch (error) {
-                console.error('記録の保存に失敗:', error);
-                alert('📱 記録の保存に失敗しました: ' + error.message + '\n\n「デバッグ表示」ボタンで詳細を確認してください。');
+                console.warn('localStorage 保存失敗:', error);
             }
+            
+            // localStorageが使えない場合はURLに保存（iPhone用）
+            console.log('📱 iPhone用 URL保存を実行');
+            saveRecordsToURL();
         }
 
         // 難易度選択
