@@ -500,7 +500,7 @@
                 
                 <!-- 記録確認ボタン（デバッグ用） -->
                 <div style="display: flex; justify-content: center; gap: 5px; margin-top: 10px; flex-wrap: wrap;">
-                    <button onclick="console.log('現在の記録:', bestRecords)" 
+                    <button onclick="checkRecords()" 
                             class="btn btn-secondary" 
                             style="font-size: 0.7rem; padding: 5px 10px;">
                         記録確認
@@ -728,13 +728,64 @@
         const handArray = ['rock', 'paper', 'scissors'];
         const normalModeOrder = ['rock', 'scissors', 'paper'];
 
-        // 記録管理（localStorage使用）
-        function loadRecords() {
+        // グローバルスコープに関数を公開（ボタンから呼び出すため）
+        window.checkRecords = function() {
+            console.log('=== 記録確認 ===');
+            console.log('localStorage サポート:', typeof(Storage) !== "undefined");
+            console.log('現在の記録:', bestRecords);
+            
             try {
                 const saved = localStorage.getItem('janken-game-records');
-                console.log('保存されている記録:', saved); // デバッグ用
+                console.log('localStorage に保存されているデータ:', saved);
+                if (saved) {
+                    console.log('パース済みデータ:', JSON.parse(saved));
+                }
+            } catch (error) {
+                console.error('localStorage アクセスエラー:', error);
+            }
+            
+            alert('コンソール（F12）で記録を確認してください');
+        };
+
+        window.clearRecords = function() {
+            console.log('=== 記録クリア ===');
+            try {
+                localStorage.removeItem('janken-game-records');
+                bestRecords = {
+                    normal: { perfectBestTime: null, perfectGames: 0 },
+                    expert: { perfectBestTime: null, perfectGames: 0 }
+                };
+                console.log('記録をクリアしました');
+                alert('記録をクリアしました');
+                
+                // 表示も更新
+                const bestRecordSection = document.getElementById('best-record-section');
+                if (bestRecordSection) {
+                    bestRecordSection.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('記録クリアエラー:', error);
+                alert('記録クリアに失敗しました: ' + error.message);
+            }
+        };
+
+        // 記録管理（localStorage使用）
+        function loadRecords() {
+            console.log('=== 記録読み込み開始 ===');
+            try {
+                // localStorageサポート確認
+                if (typeof(Storage) === "undefined") {
+                    console.warn('localStorage がサポートされていません');
+                    return;
+                }
+                
+                const saved = localStorage.getItem('janken-game-records');
+                console.log('保存されている記録:', saved);
+                
                 if (saved) {
                     const parsedRecords = JSON.parse(saved);
+                    console.log('パース済み記録:', parsedRecords);
+                    
                     // 既存の構造を保持しながらマージ
                     bestRecords.normal = {
                         perfectBestTime: parsedRecords.normal?.perfectBestTime || null,
@@ -744,66 +795,45 @@
                         perfectBestTime: parsedRecords.expert?.perfectBestTime || null,
                         perfectGames: parsedRecords.expert?.perfectGames || 0
                     };
-                    console.log('読み込まれた記録:', bestRecords); // デバッグ用
+                    console.log('読み込まれた記録:', bestRecords);
+                } else {
+                    console.log('保存された記録がありません（初回起動）');
                 }
             } catch (error) {
-                console.warn('記録の読み込みに失敗:', error);
-                // エラーの場合はデフォルト値を使用
+                console.error('記録の読み込みに失敗:', error);
+                alert('記録の読み込みに失敗しました: ' + error.message);
             }
         }
 
         function saveRecords() {
+            console.log('=== 記録保存開始 ===');
             try {
-                localStorage.setItem('janken-game-records', JSON.stringify(bestRecords));
-                console.log('記録を保存しました:', bestRecords); // デバッグ用
+                // localStorageサポート確認
+                if (typeof(Storage) === "undefined") {
+                    console.warn('localStorage がサポートされていません');
+                    alert('このブラウザでは記録保存がサポートされていません');
+                    return;
+                }
+                
+                const dataToSave = JSON.stringify(bestRecords);
+                console.log('保存するデータ:', dataToSave);
+                
+                localStorage.setItem('janken-game-records', dataToSave);
+                console.log('記録を保存しました:', bestRecords);
                 
                 // 保存確認
                 const verification = localStorage.getItem('janken-game-records');
-                console.log('保存確認:', verification); // デバッグ用
-            } catch (error) {
-                console.warn('記録の保存に失敗:', error);
-            }
-        }
-
-        // 記録をクリアする関数（テスト用）
-        function clearRecords() {
-            try {
-                localStorage.removeItem('janken-game-records');
-                bestRecords = {
-                    normal: { perfectBestTime: null, perfectGames: 0 },
-                    expert: { perfectBestTime: null, perfectGames: 0 }
-                };
-                console.log('記録をクリアしました');
-                updateRecordDisplay();
-            } catch (error) {
-                console.warn('記録のクリアに失敗:', error);
-            }
-        }
-
-        // 記録表示を更新する関数
-        function updateRecordDisplay() {
-            const bestRecordSection = document.getElementById('best-record-section');
-            const currentDifficultyRecord = bestRecords[gameState.difficulty];
-            
-            if (currentDifficultyRecord && currentDifficultyRecord.perfectGames > 0 && currentDifficultyRecord.perfectBestTime !== null) {
-                if (bestRecordSection) {
-                    bestRecordSection.classList.remove('hidden');
-                    
-                    const perfectBestTimeElem = document.getElementById('perfect-best-time');
-                    const perfectGamesElem = document.getElementById('perfect-games');
-                    
-                    if (perfectBestTimeElem) {
-                        perfectBestTimeElem.textContent = currentDifficultyRecord.perfectBestTime + '秒';
-                    }
-                    
-                    if (perfectGamesElem) {
-                        perfectGamesElem.textContent = currentDifficultyRecord.perfectGames.toString();
-                    }
+                console.log('保存確認:', verification);
+                
+                if (verification === dataToSave) {
+                    console.log('✅ 保存成功');
+                } else {
+                    console.error('❌ 保存失敗: データが一致しません');
                 }
-            } else {
-                if (bestRecordSection) {
-                    bestRecordSection.classList.add('hidden');
-                }
+                
+            } catch (error) {
+                console.error('記録の保存に失敗:', error);
+                alert('記録の保存に失敗しました: ' + error.message);
             }
         }
 
@@ -1295,16 +1325,25 @@
                 
                 let hasNewRecord = false;
                 
+                // 全問正解の場合のみ記録を更新
                 if (gameState.correctAnswers === 10) {
+                    console.log('=== 全問正解！記録更新処理開始 ===');
+                    console.log('現在の記録:', bestRecords);
+                    console.log('今回のタイム:', totalTimeSeconds + '秒');
+                    
                     const currentDifficultyRecord = bestRecords[gameState.difficulty];
                     currentDifficultyRecord.perfectGames++;
                     
                     if (currentDifficultyRecord.perfectBestTime === null || totalTimeSeconds < currentDifficultyRecord.perfectBestTime) {
+                        console.log('🎉 新記録達成！');
                         currentDifficultyRecord.perfectBestTime = totalTimeSeconds;
                         hasNewRecord = true;
                     }
                     
-                    saveRecords();
+                    console.log('更新後の記録:', bestRecords);
+                    saveRecords(); // 記録を保存
+                } else {
+                    console.log('全問正解ではないため記録は更新されません');
                 }
                 
                 // 画面切り替え - ゲーム画面を非表示にして結果画面を表示
@@ -1412,7 +1451,12 @@
 
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== ゲーム初期化開始 ===');
             try {
+                // localStorage サポートチェック
+                console.log('localStorage サポート:', typeof(Storage) !== "undefined");
+                console.log('ブラウザ:', navigator.userAgent);
+                
                 loadRecords();
                 updateScore();
                 
@@ -1423,9 +1467,13 @@
                     finalResult.classList.remove('show');
                 }
                 
-                // 記録保存のテスト（デバッグ用）
-                console.log('localStorage サポート:', typeof(Storage) !== "undefined");
                 console.log('初期記録:', bestRecords);
+                
+                // ボタンの存在確認
+                const recordCheckBtn = document.querySelector('button[onclick="checkRecords()"]');
+                const recordClearBtn = document.querySelector('button[onclick="clearRecords()"]');
+                console.log('記録確認ボタン:', recordCheckBtn ? '見つかりました' : '見つかりません');
+                console.log('記録クリアボタン:', recordClearBtn ? '見つかりました' : '見つかりません');
                 
                 // イベントリスナーを追加
                 const normalBtn = document.getElementById('normal-btn');
@@ -1478,8 +1526,12 @@
                         resetGame();
                     });
                 }
+                
+                console.log('=== 初期化完了 ===');
+                
             } catch (error) {
-                console.warn('初期化エラー:', error);
+                console.error('初期化エラー:', error);
+                alert('ゲームの初期化でエラーが発生しました: ' + error.message);
             }
         });
     </script>
