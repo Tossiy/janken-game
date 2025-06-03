@@ -14,42 +14,42 @@
         body {
             font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            height: 100vh;
             color: #333;
+            overflow: hidden;
         }
 
         .container {
             max-width: 700px;
             margin: 0 auto;
-            padding: 8px;
+            padding: clamp(0.5vh, 2vh, 3vh) 8px;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: clamp(0.5vh, 1.5vh, 2vh);
             color: white;
             flex-shrink: 0;
         }
 
         .header h1 {
-            font-size: 1.4rem;
-            margin-bottom: 2px;
+            font-size: clamp(1rem, 3vh, 1.8rem);
+            margin-bottom: clamp(0.2vh, 0.8vh, 1vh);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            font-size: 0.8rem;
+            font-size: clamp(0.6rem, 1.8vh, 1rem);
             opacity: 0.9;
         }
 
         .game-container {
             background: white;
             border-radius: 15px;
-            padding: 12px;
+            padding: clamp(1vh, 2.5vh, 4vh);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             flex: 1;
             text-align: center;
@@ -60,38 +60,38 @@
 
         .score-board {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 8px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(0.5vh, 1vh, 1.5vh);
+            margin-bottom: clamp(0.5vh, 1vh, 2vh);
         }
 
         .score-item {
             background: #f7fafc;
             border-radius: 6px;
-            padding: 8px 6px;
+            padding: clamp(0.5vh, 1vh, 1.5vh);
             border: 2px solid #e2e8f0;
         }
 
         .score-value {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vh, 1.5rem);
             font-weight: bold;
             color: #3182ce;
         }
 
         .score-label {
-            font-size: 0.7rem;
+            font-size: clamp(0.5rem, 1.5vh, 0.8rem);
             color: #4a5568;
-            margin-top: 1px;
+            margin-top: clamp(0.2vh, 0.5vh, 0.8vh);
         }
 
         /* プログレスバーのスタイル */
         .progress-bar {
             width: 100%;
-            height: 20px;
+            height: clamp(2vh, 3vh, 4vh);
             background-color: #e2e8f0;
             border-radius: 10px;
             overflow: hidden;
-            margin: 15px 0;
+            margin: clamp(1vh, 2vh, 3vh) 0;
             border: 2px solid #cbd5e0;
             position: relative;
         }
@@ -124,16 +124,9 @@
             100% { transform: translateX(100%); }
         }
 
-        .time-display {
-            font-size: 1.1rem;
-            color: #4a5568;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-
         .opponent-hand {
-            font-size: 5rem;
-            margin: 8px 0;
+            font-size: clamp(2.5rem, 8vh, 5rem);
+            margin: clamp(1vh, 2vh, 3vh) 0;
             animation: bounce 0.5s ease;
             transition: all 0.3s ease;
         }
@@ -141,6 +134,7 @@
         .opponent-hand.hidden-transition {
             opacity: 0;
             transform: scale(0.8);
+            visibility: hidden;
         }
 
         @keyframes bounce {
@@ -149,9 +143,9 @@
         }
 
         .instruction {
-            font-size: 2.2rem;
+            font-size: clamp(1.2rem, 4vh, 2rem);
             font-weight: bold;
-            margin: 15px 0;
+            margin: clamp(1vh, 2vh, 3vh) 0;
             color: #2d3748;
             transition: opacity 0.3s ease;
             text-align: center;
@@ -159,74 +153,97 @@
 
         .instruction.hidden-transition {
             opacity: 0;
+            visibility: hidden;
         }
 
         .choices {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            max-width: 500px;
-            margin: 0 auto 20px;
+            gap: clamp(1vh, 2vh, 2.5vh);
+            max-width: min(500px, 90vw);
+            margin: clamp(1vh, 2vh, 3vh) auto;
             transition: all 0.3s ease;
         }
 
         .choices.hidden-transition {
             opacity: 0;
             transform: scale(0.9);
+            visibility: hidden;
         }
 
         #back-button-container.hidden-transition {
             opacity: 0;
             transform: translateY(10px);
+            visibility: hidden;
         }
 
-        .choice-btn {
-            background: #f7fafc;
-            border: 3px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 20px 15px;
-            font-size: 3rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
+        .game-choice-button {
+            all: unset !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-color: #f7fafc !important;
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding: clamp(1vh, 2vh, 3vh) clamp(0.5vh, 1vh, 1.5vh) !important;
+            font-size: clamp(1.5rem, 5vh, 3rem) !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            gap: clamp(0.5vh, 1vh, 1.5vh) !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: clamp(8vh, 12vh, 15vh) !important;
+            position: relative !important;
+            outline: none !important;
+            text-decoration: none !important;
+            color: inherit !important;
         }
 
-        .choice-btn:hover:not(:disabled) {
-            border-color: #3182ce;
-            background: #ebf8ff;
-            transform: scale(1.05);
+        .game-choice-button:hover:not([disabled]) {
+            background-color: #ebf8ff !important;
+            border-color: #3182ce !important;
+            transform: scale(1.05) !important;
         }
 
-        .choice-btn:active:not(:disabled) {
-            transform: scale(0.95);
+        .game-choice-button:active:not([disabled]) {
+            background-color: #e2e8f0 !important;
+            border-color: #2c5aa0 !important;
+            transform: scale(0.95) !important;
         }
 
-        .choice-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .game-choice-button[disabled] {
+            opacity: 0.5 !important;
+            cursor: not-allowed !important;
             transform: none !important;
+            background-color: #f7fafc !important;
+            border-color: #e2e8f0 !important;
+        }
+
+        .game-choice-button.flash {
+            background-color: #fff5f5 !important;
+            border-color: #e53e3e !important;
+            box-shadow: 0 0 20px rgba(229, 62, 62, 0.8), 0 0 40px rgba(229, 62, 62, 0.6) !important;
+            transform: scale(1.1) !important;
         }
 
         .choice-label {
-            font-size: 1.2rem;
+            font-size: clamp(0.7rem, 2vh, 1.2rem);
             font-weight: bold;
             color: #4a5568;
         }
 
         .result {
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vh, 1.5rem);
             font-weight: bold;
-            margin: 30px auto;
-            padding: 15px;
-            border-radius: 15px;
+            margin: clamp(1vh, 2vh, 3vh) auto;
+            padding: clamp(1vh, 1.5vh, 2vh);
+            border-radius: 10px;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.5s ease;
-            max-width: 250px;
-            width: 50%;
+            max-width: min(220px, 60vw);
         }
 
         .result.show {
@@ -246,78 +263,76 @@
             border: 2px solid #fc8181;
         }
 
-        .next-btn {
-            background: #3182ce;
-            color: white;
+        .btn {
             border: none;
-            border-radius: 15px;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 20px 10px;
-        }
-
-        .next-btn:hover:not(:disabled) {
-            background: #2c5aa0;
-            transform: translateY(-2px);
-        }
-
-        .next-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-            transform: none;
+            font-size: clamp(0.8rem, 2.5vh, 1.2rem);
+            padding: clamp(1vh, 2vh, 2.5vh) clamp(2vh, 3vh, 4vh);
+            margin: clamp(0.5vh, 1vh, 1.5vh);
         }
 
         .start-btn {
             background: linear-gradient(135deg, #38a169 0%, #48bb78 100%);
             color: white;
-            border: none;
-            border-radius: 15px;
-            padding: 20px 30px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 20px;
-            max-width: 300px;
+            font-size: clamp(1rem, 3vh, 1.5rem);
+            padding: clamp(1.5vh, 2.5vh, 3vh) clamp(3vh, 4vh, 5vh);
         }
 
         .start-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(56, 161, 105, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 161, 105, 0.3);
         }
 
         .start-btn:disabled {
             background: #a0aec0;
             cursor: not-allowed;
             transform: none;
+            opacity: 0.5;
         }
 
-        .timer {
-            font-size: 1.5rem;
-            color: #e53e3e;
-            margin: 20px 0;
-            font-weight: bold;
+        .difficulty-btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            padding: clamp(1vh, 1.5vh, 2vh) clamp(2vh, 3vh, 4vh);
+            margin: clamp(0.5vh, 1vh, 1.5vh);
+            font-size: clamp(0.8rem, 2.2vh, 1.1rem);
+        }
+
+        .difficulty-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(66, 153, 225, 0.3);
+        }
+
+        .difficulty-btn.expert {
+            background: linear-gradient(135deg, #e53e3e 0%, #f56565 100%);
+        }
+
+        .difficulty-btn.selected {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         }
 
         .explanation {
             background: #ebf8ff;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
+            border-radius: 10px;
+            padding: clamp(1vh, 2vh, 2.5vh);
+            margin: clamp(0.5vh, 1vh, 1.5vh) 0;
             border: 2px solid #3182ce;
-        }
-
-        .explanation h3 {
-            color: #1a365d;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            font-size: clamp(0.7rem, 2vh, 1rem);
         }
 
         .explanation p {
             color: #2d3748;
-            line-height: 1.6;
-            margin-bottom: 10px;
+            line-height: 1.4;
+            margin-bottom: clamp(0.5vh, 1vh, 1.2vh);
+        }
+
+        .current-difficulty {
+            font-size: clamp(0.6rem, 1.8vh, 0.9rem);
+            color: #666;
+            margin-bottom: clamp(1vh, 2vh, 2.5vh);
         }
 
         .hidden {
@@ -326,58 +341,208 @@
 
         .btn-secondary {
             background: #718096;
+            color: white;
         }
 
         .btn-secondary:hover:not(:disabled) {
             background: #4a5568;
         }
 
-        @media (max-width: 768px) {
+        .final-result-content {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1vh, 2vh, 2.5vh);
+            padding: clamp(1vh, 2vh, 3vh) 0;
+        }
+
+        .result-summary {
+            background: #f0fff4;
+            border-radius: 10px;
+            padding: clamp(1vh, 2vh, 2.5vh);
+            border: 2px solid #68d391;
+            font-size: clamp(0.8rem, 2.5vh, 1.2rem);
+        }
+
+        .record-section {
+            background: #fff5f5;
+            border-radius: 10px;
+            padding: clamp(1vh, 1.5vh, 2vh);
+            border: 2px solid #fc8181;
+            font-size: clamp(0.7rem, 2.2vh, 1rem);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: clamp(1vh, 2vh, 2.5vh);
+            flex-wrap: wrap;
+            margin-top: clamp(1vh, 2vh, 2.5vh);
+        }
+
+        /* 初期状態で結果画面を確実に非表示 */
+        #final-result {
+            display: none;
+        }
+
+        #final-result.show {
+            display: flex;
+        }
+
+        /* PC・大画面タブレット用 */
+        @media (min-width: 1024px) {
             .container {
-                padding: 4px;
+                padding: 3vh 20px;
             }
 
-            .header h1 {
+            .game-container {
+                padding: 4vh;
+            }
+
+            .opponent-hand {
+                font-size: 5rem;
+                margin: 3vh 0;
+            }
+
+            .instruction {
+                font-size: 2rem;
+                margin: 3vh 0;
+            }
+
+            .game-choice-button {
+                min-height: 15vh !important;
+                font-size: 3rem !important;
+                padding: 3vh 1.5vh !important;
+            }
+
+            .choice-label {
                 font-size: 1.2rem;
             }
 
-            .header p {
-                font-size: 0.7rem;
+            .btn {
+                font-size: 1.2rem;
+                padding: 2.5vh 4vh;
             }
 
-            .choices {
-                gap: 6px;
+            .start-btn {
+                font-size: 1.5rem;
+                padding: 3vh 5vh;
+            }
+
+            .score-value {
+                font-size: 1.5rem;
+            }
+
+            .score-label {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* 中画面タブレット用 */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .container {
+                padding: 2vh 15px;
+            }
+
+            .game-container {
+                padding: 3vh;
             }
 
             .opponent-hand {
                 font-size: 4rem;
+                margin: 2.5vh 0;
             }
 
             .instruction {
-                font-size: 1.3rem;
-                padding: 8px;
+                font-size: 1.7rem;
+                margin: 2.5vh 0;
             }
 
-            .choice-btn {
-                font-size: 1.8rem;
-                padding: 10px 6px;
+            .game-choice-button {
+                min-height: 13vh !important;
+                font-size: 2.5rem !important;
+                padding: 2.5vh 1.2vh !important;
+            }
+
+            .choice-label {
+                font-size: 1rem;
+            }
+
+            .btn {
+                font-size: 1rem;
+                padding: 2vh 3.5vh;
+            }
+
+            .start-btn {
+                font-size: 1.3rem;
+                padding: 2.5vh 4.5vh;
+            }
+
+            .score-value {
+                font-size: 1.3rem;
+            }
+
+            .score-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* スマホ用 */
+        @media (max-width: 767px) {
+            .container {
+                padding: 0.5vh 8px;
             }
 
             .game-container {
-                padding: 10px;
+                padding: 1.5vh;
             }
 
-            .explanation p {
-                font-size: 0.7rem;
+            .opponent-hand {
+                font-size: clamp(2rem, 6vh, 3rem);
+                margin: 1.5vh 0;
             }
 
-            .explanation h3 {
-                font-size: 0.8rem;
+            .instruction {
+                font-size: clamp(1rem, 3.5vh, 1.4rem);
+                margin: 1.5vh 0;
+            }
+
+            .game-choice-button {
+                font-size: clamp(1.2rem, 4vh, 1.8rem) !important;
+                padding: 1.5vh 1vh !important;
+                min-height: 8vh !important;
+            }
+
+            .choice-label {
+                font-size: clamp(0.6rem, 1.5vh, 0.8rem);
+            }
+
+            .btn {
+                font-size: clamp(0.7rem, 2vh, 0.9rem);
+                padding: 1.2vh 2.5vh;
+                margin: 0.5vh;
+            }
+
+            .start-btn {
+                font-size: clamp(0.8rem, 2.3vh, 1.1rem);
+                padding: 1.8vh 3.5vh;
+            }
+
+            .explanation {
+                padding: 1.5vh;
+                font-size: clamp(0.6rem, 1.8vh, 0.8rem);
+            }
+
+            .score-value {
+                font-size: clamp(0.9rem, 2.5vh, 1.1rem);
+            }
+
+            .score-label {
+                font-size: clamp(0.5rem, 1.3vh, 0.6rem);
             }
 
             .progress-bar {
-                height: 15px;
-                margin: 10px 0;
+                height: 2.5vh;
+                margin: 1.5vh 0;
             }
         }
     </style>
@@ -390,43 +555,42 @@
         </div>
 
         <div class="game-container">
-            <!-- ゲーム説明 -->
+            <!-- ゲーム説明（簡略化） -->
             <div id="explanation" class="explanation">
-                <h3>📋 ゲーム説明</h3>
-                <p>🎯 相手の手が表示され、「勝って/負けて」の指示が出ます</p>
-                <p>⚡ 10秒以内に正しい手を選んでください（10問）</p>
-                <p><strong>例：</strong> 相手が✊で「勝ってください」→ ✋を選ぶ</p>
-                <p><strong>例：</strong> 相手が✌️で「負けてください」→ ✊を選ぶ</p>
+                <p>🎯 相手の手と「勝って/負けて」の指示が出ます。10秒以内に正しい手を選んでください（10問）</p>
                 <p>🏆 最短時間と最高正解率を目指しましょう！</p>
-                <p style="font-size: 0.7rem; color: #666; margin-top: 8px;">※記録はページをリロードするまでの間のみ保持されます</p>
             </div>
 
+            <!-- メイン画面（難易度選択+スタート） -->
+            <div id="main-menu">
+                <h3 style="color: #2d3748; margin-bottom: clamp(1vh, 2vh, 2.5vh); font-size: clamp(1rem, 3vh, 1.4rem);">🎮 難易度選択</h3>
+                
+                <!-- 難易度選択ボタン -->
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(0.8vh, 1.5vh, 2vh); margin-bottom: clamp(1vh, 2vh, 2.5vh);">
+                    <button class="difficulty-btn btn" id="normal-btn">通常</button>
+                    <button class="difficulty-btn expert btn" id="expert-btn">上級</button>
+                </div>
 
+                <!-- 選択中の難易度表示（簡略化） -->
+                <div class="current-difficulty" id="current-difficulty">難易度を選択してください</div>
 
-            <!-- スタートボタン -->
-            <div style="display: flex; justify-content: center;">
-                <button id="start-btn" class="start-btn" onclick="startGame()">ゲームスタート</button>
+                <!-- ゲームスタートボタン -->
+                <div style="display: flex; justify-content: center;">
+                    <button id="start-btn" class="start-btn btn" disabled>ゲームスタート</button>
+                </div>
             </div>
 
             <!-- ゲーム画面 -->
             <div id="game-area" class="hidden">
-                <!-- ゲーム中スコアボード -->
+                <!-- ゲーム中スコアボード（2項目のみ） -->
                 <div class="score-board">
                     <div class="score-item">
                         <div class="score-value" id="remaining-count">10</div>
-                        <div class="score-label">残り問題数</div>
+                        <div class="score-label">残り問題</div>
                     </div>
                     <div class="score-item">
                         <div class="score-value" id="game-correct-count">0</div>
                         <div class="score-label">正解数</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-value" id="game-accuracy">100%</div>
-                        <div class="score-label">正解率</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-value" id="game-streak-count">0</div>
-                        <div class="score-label">連続回数</div>
                     </div>
                 </div>
 
@@ -442,64 +606,54 @@
                 <div id="instruction" class="instruction"></div>
 
                 <!-- 選択肢 -->
-                <div class="choices">
-                    <button class="choice-btn" onclick="makeChoice('rock')">
-                        <div>✊</div>
-                        <div class="choice-label">グー</div>
-                    </button>
-                    <button class="choice-btn" onclick="makeChoice('scissors')">
-                        <div>✌️</div>
-                        <div class="choice-label">チョキ</div>
-                    </button>
-                    <button class="choice-btn" onclick="makeChoice('paper')">
-                        <div>✋</div>
-                        <div class="choice-label">パー</div>
-                    </button>
+                <div class="choices" id="choices">
+                    <!-- ボタンは JavaScript で動的に生成 -->
                 </div>
 
                 <!-- 結果表示 -->
                 <div id="result" class="result"></div>
 
                 <!-- メインに戻るボタンのみ -->
-                <div id="back-button-container" style="display: flex; justify-content: center; margin-top: 10px; transition: all 0.3s ease;">
-                    <button class="next-btn btn-secondary" onclick="resetGame()">メインに戻る</button>
+                <div id="back-button-container" style="display: flex; justify-content: center; margin: clamp(0.5vh, 1vh, 1.5vh) 0; transition: all 0.3s ease;">
+                    <button class="btn btn-secondary" id="back-to-main-btn">メインに戻る</button>
                 </div>
             </div>
 
-            <!-- 最終結果 -->
-            <div id="final-result" class="hidden">
-                <h2 style="font-size: 1.3rem; margin-bottom: 15px;">🎉 ゲーム終了！</h2>
+            <!-- 最終結果（結果画面でのみ表示） -->
+            <div id="final-result" class="hidden final-result-content">
+                <h2 style="font-size: clamp(1.1rem, 3.5vh, 1.6rem); margin-bottom: clamp(1vh, 2vh, 2.5vh);">🎉 ゲーム終了！</h2>
                 
-                <!-- 今回の結果（シンプル表示） -->
-                <div style="background: #f0fff4; border-radius: 15px; padding: 15px; margin: 10px 0; border: 2px solid #68d391;">
-                    <div class="time-display" id="total-time">総時間: 0秒</div>
-                    <div style="text-align: center; font-size: 1.1rem; color: #4a5568; margin-top: 10px;">
+                <!-- 今回の結果（1行に集約） -->
+                <div class="result-summary">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span id="final-result-summary">正解数: 0/10</span>
+                        <span id="total-time">0秒</span>
+                    </div>
+                    <div style="text-align: center; font-size: 0.8rem; color: #666; margin-top: 5px;">
+                        <span id="final-difficulty-display"></span>
                     </div>
                 </div>
 
-                <!-- 最高記録（全正解記録がある場合のみ表示） -->
-                <div id="best-record-section" class="hidden" style="background: #fff5f5; border-radius: 15px; padding: 15px; margin: 10px 0; border: 2px solid #fc8181;">
-                    <h3 style="color: #e53e3e; margin-bottom: 10px; font-size: 1.1rem;">🏆 10問全正解 最短記録</h3>
-                    <div style="text-align: center;">
-                        <div class="score-item" style="display: inline-block; margin: 0 auto;">
-                            <div class="score-value" id="perfect-best-time">-</div>
-                            <div class="score-label">最短時間</div>
-                        </div>
+                <!-- 最高記録（簡略化） -->
+                <div id="best-record-section" class="hidden record-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>🏆 最短記録</span>
+                        <span id="perfect-best-time">-</span>
                     </div>
-                    <div style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: #666;">
-                        全正解回数: <span id="perfect-games">0</span>回
+                    <div style="text-align: center; font-size: 0.7rem; color: #666; margin-top: 3px;">
+                        全正解: <span id="perfect-games">0</span>回
                     </div>
                 </div>
 
                 <!-- 記録更新表示 -->
-                <div id="record-update" class="hidden" style="background: #fef5e7; border-radius: 15px; padding: 15px; margin: 10px 0; border: 2px solid #f6ad55; color: #c05621; font-weight: bold; text-align: center;">
+                <div id="record-update" class="hidden" style="background: #fef5e7; border-radius: 10px; padding: 8px; border: 2px solid #f6ad55; color: #c05621; font-weight: bold; text-align: center; font-size: 0.8rem;">
                     🎊 新記録達成！
                 </div>
 
-                <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                    <button class="start-btn" onclick="startNextGame()">再チャレンジ</button>
-                    <button class="next-btn" onclick="resetGame()">メインに戻る</button>
+                <!-- ボタン統合 -->
+                <div class="button-group">
+                    <button class="btn start-btn" id="restart-btn">再挑戦</button>
+                    <button class="btn btn-secondary" id="final-back-btn">メインに戻る</button>
                 </div>
             </div>
         </div>
@@ -533,84 +687,58 @@
             playTone(frequency, duration, volume = 0.1, type = 'sine') {
                 if (!this.initialized || !this.audioContext) return;
                 
-                const oscillator = this.audioContext.createOscillator();
-                const gainNode = this.audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-                
-                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-                oscillator.type = type;
-                
-                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(volume, this.audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
-                
-                oscillator.start(this.audioContext.currentTime);
-                oscillator.stop(this.audioContext.currentTime + duration);
-            },
-
-            // ノイズ音を生成
-            playNoise(duration, volume = 0.1) {
-                if (!this.initialized || !this.audioContext) return;
-                
-                const bufferSize = this.audioContext.sampleRate * duration;
-                const noiseBuffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
-                
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = Math.random() * 2 - 1;
+                try {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                    oscillator.type = type;
+                    
+                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(volume, this.audioContext.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
+                    
+                    oscillator.start(this.audioContext.currentTime);
+                    oscillator.stop(this.audioContext.currentTime + duration);
+                } catch (error) {
+                    console.warn('音声再生エラー:', error);
                 }
-                
-                const noiseNode = this.audioContext.createBufferSource();
-                const gainNode = this.audioContext.createGain();
-                
-                noiseNode.buffer = noiseBuffer;
-                noiseNode.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-                
-                gainNode.gain.setValueAtTime(volume, this.audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
-                
-                noiseNode.start(this.audioContext.currentTime);
             },
 
             // ゲーム開始音
             playGameStart() {
-                this.playTone(261.63, 0.2); // C4
-                setTimeout(() => this.playTone(329.63, 0.2), 100); // E4
-                setTimeout(() => this.playTone(392.00, 0.3), 200); // G4
+                this.playTone(261.63, 0.2);
+                setTimeout(() => this.playTone(329.63, 0.2), 100);
+                setTimeout(() => this.playTone(392.00, 0.3), 200);
             },
 
             // 問題切り替え音
             playRoundStart() {
-                this.playTone(392.00, 0.1); // G4
+                this.playTone(392.00, 0.1);
             },
 
             // 正解音
             playCorrect() {
-                this.playTone(523.25, 0.15); // C5
-                setTimeout(() => this.playTone(659.25, 0.15), 100); // E5
+                this.playTone(523.25, 0.15);
+                setTimeout(() => this.playTone(659.25, 0.15), 100);
             },
 
             // 不正解音
             playIncorrect() {
-                this.playTone(174.61, 0.3, 0.15); // F3
-            },
-
-            // 時間切れ音
-            playTimeUp() {
-                this.playNoise(0.1, 0.2);
+                this.playTone(174.61, 0.3, 0.15);
             },
 
             // ボタンクリック音
             playClick() {
-                this.playTone(440.00, 0.05, 0.08); // A4
+                this.playTone(440.00, 0.05, 0.08);
             },
 
             // ゲーム終了音（新記録）
             playNewRecord() {
-                const melody = [523.25, 587.33, 659.25, 698.46, 783.99]; // C5, D5, E5, F5, G5
+                const melody = [523.25, 587.33, 659.25, 698.46, 783.99];
                 melody.forEach((freq, i) => {
                     setTimeout(() => this.playTone(freq, 0.2), i * 100);
                 });
@@ -618,22 +746,23 @@
 
             // ゲーム終了音（通常）
             playGameEnd() {
-                this.playTone(392.00, 0.2); // G4
-                setTimeout(() => this.playTone(329.63, 0.2), 150); // E4
-                setTimeout(() => this.playTone(261.63, 0.3), 300); // C4
+                this.playTone(392.00, 0.2);
+                setTimeout(() => this.playTone(329.63, 0.2), 150);
+                setTimeout(() => this.playTone(261.63, 0.3), 300);
             }
         };
 
         // ゲーム状態
         let gameState = {
             isPlaying: false,
+            difficulty: null,
             currentRound: 0,
             totalRounds: 10,
             correctAnswers: 0,
             totalAnswers: 0,
             currentOpponentHand: '',
             currentInstruction: '',
-            timeLimit: 10000, // 10秒
+            timeLimit: 10000,
             timer: null,
             roundTimer: null,
             startTime: null,
@@ -642,83 +771,206 @@
             choiceSelected: false
         };
 
-        // 最高記録（10問全正解時のみ記録）
-        // 注意: この環境ではLocalStorageが使用できないため、
-        // 記録はページをリロードするまでの間のみ保持されます
+        // 最高記録
         let bestRecords = {
-            perfectBestTime: null,     // 10問全正解時の最短時間（秒）
-            perfectGames: 0            // 10問全正解回数
+            normal: {
+                perfectBestTime: null,
+                perfectGames: 0
+            },
+            expert: {
+                perfectBestTime: null,
+                perfectGames: 0
+            }
         };
 
         const hands = {
             rock: { emoji: '✊', name: 'グー' },
-            paper: { emoji: '✋', name: 'パー' },
-            scissors: { emoji: '✌️', name: 'チョキ' }
+            scissors: { emoji: '✌️', name: 'チョキ' },
+            paper: { emoji: '✋', name: 'パー' }
         };
 
         const handArray = ['rock', 'paper', 'scissors'];
+        const normalModeOrder = ['rock', 'scissors', 'paper'];
 
-        // 記録管理（メモリ内のみ - セッション中のみ有効）
+        // 記録管理（メモリ内のみ）
         function loadRecords() {
-            // アーティファクト環境ではLocalStorageが使用できないため、
-            // セッション中のみ記録を保持します
+            // メモリ内のみで記録を管理
         }
 
         function saveRecords() {
-            // メモリ内の記録を更新（セッション中のみ有効）
+            // メモリ内の記録を更新
+        }
+
+        // 難易度選択
+        async function selectDifficulty(difficulty) {
+            try {
+                await SoundSystem.init();
+                SoundSystem.playClick();
+                
+                gameState.difficulty = difficulty;
+                
+                document.getElementById('normal-btn').classList.remove('selected');
+                document.getElementById('expert-btn').classList.remove('selected');
+                
+                if (difficulty === 'normal') {
+                    document.getElementById('normal-btn').classList.add('selected');
+                } else {
+                    document.getElementById('expert-btn').classList.add('selected');
+                }
+                
+                const currentDifficultyElem = document.getElementById('current-difficulty');
+                if (currentDifficultyElem) {
+                    if (difficulty === 'normal') {
+                        currentDifficultyElem.textContent = '通常モード（グー・チョキ・パー順）';
+                    } else {
+                        currentDifficultyElem.textContent = '上級モード（ランダム順）';
+                    }
+                }
+                
+                const startBtn = document.getElementById('start-btn');
+                if (startBtn) {
+                    startBtn.disabled = false;
+                    startBtn.style.opacity = '1';
+                }
+            } catch (error) {
+                console.warn('難易度選択エラー:', error);
+            }
+        }
+
+        // 配列をシャッフルする関数
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // ボタンの完全リセット関数
+        function completeButtonReset() {
+            try {
+                const buttons = document.querySelectorAll('.game-choice-button');
+                buttons.forEach((btn) => {
+                    if (!btn) return;
+                    
+                    btn.blur();
+                    btn.tabIndex = -1;
+                    btn.disabled = false;
+                    btn.classList.remove('flash');
+                    
+                    btn.style.setProperty('background-color', '#f7fafc', 'important');
+                    btn.style.setProperty('border-color', '#e2e8f0', 'important');
+                    btn.style.setProperty('transform', 'none', 'important');
+                    btn.style.setProperty('box-shadow', 'none', 'important');
+                    btn.style.setProperty('opacity', '1', 'important');
+                });
+            } catch (error) {
+                console.warn('ボタンリセットエラー:', error);
+            }
+        }
+
+        // 選択肢ボタンを生成する関数
+        function generateChoiceButtons() {
+            try {
+                const choicesContainer = document.getElementById('choices');
+                if (!choicesContainer) return;
+                
+                choicesContainer.innerHTML = '';
+                choicesContainer.className = 'choices';
+                
+                let choiceOrder;
+                if (gameState.difficulty === 'expert') {
+                    choiceOrder = shuffleArray(handArray);
+                } else {
+                    choiceOrder = [...normalModeOrder];
+                }
+                
+                choiceOrder.forEach((handType, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'game-choice-button';
+                    button.setAttribute('data-choice', handType);
+                    button.setAttribute('data-index', index);
+                    button.type = 'button';
+                    button.tabIndex = -1;
+                    
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        makeChoice(handType);
+                    });
+                    
+                    button.addEventListener('focus', function(e) {
+                        e.preventDefault();
+                        this.blur();
+                    });
+                    
+                    const emojiDiv = document.createElement('div');
+                    emojiDiv.textContent = hands[handType].emoji;
+                    emojiDiv.style.pointerEvents = 'none';
+                    
+                    const labelDiv = document.createElement('div');
+                    labelDiv.className = 'choice-label';
+                    labelDiv.textContent = hands[handType].name;
+                    labelDiv.style.pointerEvents = 'none';
+                    
+                    button.appendChild(emojiDiv);
+                    button.appendChild(labelDiv);
+                    choicesContainer.appendChild(button);
+                });
+                
+                setTimeout(completeButtonReset, 1);
+            } catch (error) {
+                console.warn('ボタン生成エラー:', error);
+            }
         }
 
         // 勝敗判定
         function getWinningHand(opponentHand) {
             const winMap = {
-                rock: 'paper',     // グーにはパーが勝つ
-                paper: 'scissors', // パーにはチョキが勝つ
-                scissors: 'rock'   // チョキにはグーが勝つ
+                rock: 'paper',
+                paper: 'scissors',
+                scissors: 'rock'
             };
             return winMap[opponentHand];
         }
 
         function getLosingHand(opponentHand) {
             const loseMap = {
-                rock: 'scissors', // グーにはチョキが負ける
-                paper: 'rock',    // パーにはグーが負ける
-                scissors: 'paper' // チョキにはパーが負ける
+                rock: 'scissors',
+                paper: 'rock',
+                scissors: 'paper'
             };
             return loseMap[opponentHand];
         }
 
-        // スコア更新（ゲーム画面でのスコア表示）
+        // スコア更新
         function updateScore() {
-            // ゲーム中のスコアボード要素
-            const remainingCountElem = document.getElementById('remaining-count');
-            const gameCorrectCountElem = document.getElementById('game-correct-count');
-            const gameAccuracyElem = document.getElementById('game-accuracy');
-            const gameStreakCountElem = document.getElementById('game-streak-count');
-            
-            // 残り問題数を計算
-            const remainingQuestions = gameState.totalRounds - gameState.currentRound;
-            
-            if (remainingCountElem) {
-                remainingCountElem.textContent = Math.max(0, remainingQuestions);
-            }
-            if (gameCorrectCountElem) {
-                gameCorrectCountElem.textContent = gameState.correctAnswers;
-            }
-            if (gameStreakCountElem) {
-                gameStreakCountElem.textContent = gameState.streakCount || 0;
-            }
-            if (gameAccuracyElem) {
-                const accuracy = gameState.totalAnswers > 0 
-                    ? Math.round((gameState.correctAnswers / gameState.totalAnswers) * 100)
-                    : 100;
-                gameAccuracyElem.textContent = accuracy + '%';
+            try {
+                const remainingCountElem = document.getElementById('remaining-count');
+                const gameCorrectCountElem = document.getElementById('game-correct-count');
+                
+                const remainingQuestions = Math.max(0, gameState.totalRounds - gameState.currentRound);
+                
+                if (remainingCountElem) {
+                    remainingCountElem.textContent = remainingQuestions;
+                }
+                if (gameCorrectCountElem) {
+                    gameCorrectCountElem.textContent = gameState.correctAnswers;
+                }
+            } catch (error) {
+                console.warn('スコア更新エラー:', error);
             }
         }
 
         // すべてのタイマーをクリアする関数
         function clearAllTimers() {
             if (gameState.timer) {
-                clearInterval(gameState.timer);
+                if (typeof gameState.timer === 'number') {
+                    cancelAnimationFrame(gameState.timer);
+                } else {
+                    clearInterval(gameState.timer);
+                }
                 gameState.timer = null;
             }
             if (gameState.roundTimer) {
@@ -727,488 +979,482 @@
             }
         }
 
-        // ボタンを無効化/有効化する関数
-        function setButtonsEnabled(enabled) {
-            const buttons = document.querySelectorAll('.choice-btn, .start-btn, .next-btn');
-            buttons.forEach(btn => {
-                btn.disabled = !enabled;
-            });
-        }
-
         // ゲーム開始
         async function startGame() {
-            if (gameState.isPlaying) return; // 重複実行防止
-            
-            // 音声システム初期化と開始音再生
-            await SoundSystem.init();
-            SoundSystem.playGameStart();
-            
-            clearAllTimers();
-            const startTime = new Date();
-            
-            gameState = {
-                isPlaying: true,
-                currentRound: 0,
-                totalRounds: 10,
-                correctAnswers: 0,
-                totalAnswers: 0,
-                streakCount: 0,
-                maxStreak: 0,
-                currentOpponentHand: '',
-                currentInstruction: '',
-                timeLimit: 10000, // 10秒
-                timer: null,
-                roundTimer: null,
-                startTime: startTime,
-                endTime: null,
-                roundStartTime: null,
-                choiceSelected: false
-            };
+            try {
+                if (gameState.isPlaying || !gameState.difficulty) return;
+                
+                await SoundSystem.init();
+                SoundSystem.playGameStart();
+                
+                clearAllTimers();
+                
+                gameState = {
+                    ...gameState,
+                    isPlaying: true,
+                    currentRound: 0,
+                    totalRounds: 10,
+                    correctAnswers: 0,
+                    totalAnswers: 0,
+                    startTime: new Date(),
+                    endTime: null,
+                    choiceSelected: false
+                };
 
-            document.getElementById('explanation').classList.add('hidden');
-            document.getElementById('start-btn').classList.add('hidden');
-            document.getElementById('game-area').classList.remove('hidden');
-            document.getElementById('final-result').classList.add('hidden');
+                // 画面切り替え - 結果画面を確実に非表示
+                document.getElementById('explanation').classList.add('hidden');
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('game-area').classList.remove('hidden');
+                document.getElementById('final-result').classList.add('hidden');
+                document.getElementById('final-result').classList.remove('show');
 
-            updateScore(); // 初期スコア表示
-            
-            // 初回もボタン、相手の手、戻るボタンを非表示状態でスタート
-            const choicesElement = document.querySelector('.choices');
-            const opponentHandElement = document.getElementById('opponent-hand');
-            const backButtonContainer = document.getElementById('back-button-container');
-            choicesElement.classList.add('hidden-transition');
-            opponentHandElement.classList.add('hidden-transition');
-            backButtonContainer.classList.add('hidden-transition');
-            document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.disabled = true;
-                btn.style.opacity = '0.5';
-            });
-            
-            nextRound();
+                updateScore();
+                
+                const choicesElement = document.querySelector('.choices');
+                const opponentHandElement = document.getElementById('opponent-hand');
+                const backButtonContainer = document.getElementById('back-button-container');
+                
+                if (choicesElement) choicesElement.classList.add('hidden-transition');
+                if (opponentHandElement) opponentHandElement.classList.add('hidden-transition');
+                if (backButtonContainer) backButtonContainer.classList.add('hidden-transition');
+                
+                generateChoiceButtons();
+                nextRound();
+            } catch (error) {
+                console.warn('ゲーム開始エラー:', error);
+            }
         }
 
-        // 次のゲーム開始（説明をスキップ）
+        // 次のゲーム開始
         async function startNextGame() {
-            if (gameState.isPlaying) return; // 重複実行防止
-            
-            // 音声システム初期化と開始音再生
-            await SoundSystem.init();
-            SoundSystem.playGameStart();
-            
-            clearAllTimers();
-            const startTime = new Date();
-            
-            gameState = {
-                isPlaying: true,
-                currentRound: 0,
-                totalRounds: 10,
-                correctAnswers: 0,
-                totalAnswers: 0,
-                streakCount: 0,
-                maxStreak: 0,
-                currentOpponentHand: '',
-                currentInstruction: '',
-                timeLimit: 10000, // 10秒
-                timer: null,
-                roundTimer: null,
-                startTime: startTime,
-                endTime: null,
-                roundStartTime: null,
-                choiceSelected: false
-            };
+            try {
+                if (gameState.isPlaying || !gameState.difficulty) return;
+                
+                await SoundSystem.init();
+                SoundSystem.playGameStart();
+                
+                clearAllTimers();
+                
+                gameState = {
+                    ...gameState,
+                    isPlaying: true,
+                    currentRound: 0,
+                    totalRounds: 10,
+                    correctAnswers: 0,
+                    totalAnswers: 0,
+                    startTime: new Date(),
+                    endTime: null,
+                    choiceSelected: false
+                };
 
-            document.getElementById('explanation').classList.add('hidden');
-            document.getElementById('start-btn').classList.add('hidden');
-            document.getElementById('game-area').classList.remove('hidden');
-            document.getElementById('final-result').classList.add('hidden');
+                // 画面切り替え - 結果画面を確実に非表示
+                document.getElementById('game-area').classList.remove('hidden');
+                document.getElementById('final-result').classList.add('hidden');
+                document.getElementById('final-result').classList.remove('show');
 
-            updateScore();
-            nextRound();
+                updateScore();
+                nextRound();
+            } catch (error) {
+                console.warn('次ゲーム開始エラー:', error);
+            }
         }
 
         // 次のラウンド
         function nextRound() {
-            if (!gameState.isPlaying) return;
-            
-            if (gameState.currentRound >= gameState.totalRounds) {
-                finishGame();
-                return;
-            }
-
-            clearAllTimers();
-            gameState.currentRound++;
-            gameState.choiceSelected = false;
-            gameState.roundStartTime = performance.now(); // より高精度な時間計測
-            
-            // スコア更新（残り問題数を更新）
-            updateScore();
-            
-            // プログレスバーを100%に設定
-            const progressFill = document.getElementById('progress-fill');
-            if (progressFill) {
-                progressFill.style.width = '100%';
-            }
-            
-            // ランダムで相手の手を決定
-            gameState.currentOpponentHand = handArray[Math.floor(Math.random() * 3)];
-            
-            // ランダムで指示を決定
-            gameState.currentInstruction = Math.random() > 0.5 ? 'win' : 'lose';
-            
-            // 指示メッセージ、ボタン、相手の手、戻るボタンを一瞬消してから表示
-            const instructionElement = document.getElementById('instruction');
-            const choicesElement = document.querySelector('.choices');
-            const opponentHandElement = document.getElementById('opponent-hand');
-            const backButtonContainer = document.getElementById('back-button-container');
-            
-            // 指示文字、ボタン、相手の手、戻るボタンを同時に非表示
-            instructionElement.classList.add('hidden-transition');
-            instructionElement.textContent = '';
-            choicesElement.classList.add('hidden-transition');
-            opponentHandElement.classList.add('hidden-transition');
-            opponentHandElement.textContent = '';
-            backButtonContainer.classList.add('hidden-transition');
-            
-            // 選択肢を無効化
-            document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.disabled = true;
-                btn.style.opacity = '0.5';
-            });
-            
-            // 1秒後に新しい指示、ボタン、相手の手、戻るボタンを表示
-            setTimeout(() => {
-                if (!gameState.isPlaying) return; // ゲームが終了している場合は処理しない
+            try {
+                if (!gameState.isPlaying) return;
                 
-                // 問題切り替え音を再生
-                SoundSystem.playRoundStart();
-                
-                // 相手の手を表示
-                opponentHandElement.textContent = hands[gameState.currentOpponentHand].emoji;
-                opponentHandElement.classList.remove('hidden-transition');
-                
-                // 指示を表示
-                if (gameState.currentInstruction === 'win') {
-                    instructionElement.textContent = '勝ってください！';
-                } else {
-                    instructionElement.textContent = '負けてください！';
-                }
-                instructionElement.className = 'instruction';
-                instructionElement.classList.remove('hidden-transition');
-                
-                // ボタンを表示し、有効化
-                choicesElement.classList.remove('hidden-transition');
-                document.querySelectorAll('.choice-btn').forEach(btn => {
-                    btn.disabled = false;
-                    btn.style.opacity = '1';
-                });
-                
-                // 戻るボタンを表示
-                backButtonContainer.classList.remove('hidden-transition');
-            }, 1000);
-
-            // 結果を隠す
-            document.getElementById('result').classList.remove('show');
-
-            // タイマー開始（指示とボタン表示後に開始）
-            setTimeout(() => {
-                if (gameState.isPlaying && !gameState.choiceSelected) {
-                    startTimer();
-                }
-            }, 1300); // 1秒表示待ち + 0.3秒余裕
-        }
-
-        // タイマー開始（より正確な時間計測）
-        function startTimer() {
-            const totalTime = 10; // 10秒
-            let lastUpdate = performance.now();
-            let timeLeft = totalTime * 1000; // ミリ秒
-            
-            const progressFill = document.getElementById('progress-fill');
-            if (progressFill) {
-                progressFill.style.width = '100%';
-            }
-            
-            function updateTimer() {
-                if (!gameState.isPlaying || gameState.choiceSelected) {
+                if (gameState.currentRound >= gameState.totalRounds) {
+                    finishGame();
                     return;
                 }
+
+                clearAllTimers();
+                gameState.currentRound++;
+                gameState.choiceSelected = false;
+                gameState.roundStartTime = performance.now();
                 
-                const now = performance.now();
-                const elapsed = now - lastUpdate;
-                timeLeft -= elapsed;
-                lastUpdate = now;
+                updateScore();
                 
-                // プログレスバーの幅を更新
-                const percentage = Math.max(0, (timeLeft / (totalTime * 1000)) * 100);
+                // プログレスバーを100%に設定
+                const progressFill = document.getElementById('progress-fill');
                 if (progressFill) {
-                    progressFill.style.width = percentage + '%';
+                    progressFill.style.width = '100%';
                 }
                 
-                if (timeLeft <= 0) {
-                    clearAllTimers();
-                    handleTimeUp();
-                } else {
-                    gameState.timer = requestAnimationFrame(updateTimer);
+                gameState.currentOpponentHand = handArray[Math.floor(Math.random() * 3)];
+                gameState.currentInstruction = Math.random() > 0.5 ? 'win' : 'lose';
+                
+                const instructionElement = document.getElementById('instruction');
+                const choicesElement = document.querySelector('.choices');
+                const opponentHandElement = document.getElementById('opponent-hand');
+                const backButtonContainer = document.getElementById('back-button-container');
+                
+                if (instructionElement) {
+                    instructionElement.classList.add('hidden-transition');
+                    instructionElement.textContent = '';
                 }
+                if (choicesElement) choicesElement.classList.add('hidden-transition');
+                if (opponentHandElement) {
+                    opponentHandElement.classList.add('hidden-transition');
+                    opponentHandElement.textContent = '';
+                }
+                if (backButtonContainer) backButtonContainer.classList.add('hidden-transition');
+                
+                setTimeout(() => {
+                    if (!gameState.isPlaying) return;
+                    
+                    SoundSystem.playRoundStart();
+                    
+                    generateChoiceButtons();
+                    
+                    setTimeout(() => {
+                        completeButtonReset();
+                    }, 100);
+                    
+                    if (opponentHandElement) {
+                        opponentHandElement.textContent = hands[gameState.currentOpponentHand].emoji;
+                        opponentHandElement.classList.remove('hidden-transition');
+                    }
+                    
+                    if (instructionElement) {
+                        instructionElement.textContent = gameState.currentInstruction === 'win' ? '勝ってください！' : '負けてください！';
+                        instructionElement.classList.remove('hidden-transition');
+                    }
+                    
+                    if (choicesElement) choicesElement.classList.remove('hidden-transition');
+                    if (backButtonContainer) backButtonContainer.classList.remove('hidden-transition');
+                }, 1000);
+
+                const resultElement = document.getElementById('result');
+                if (resultElement) {
+                    resultElement.classList.remove('show');
+                }
+
+                setTimeout(() => {
+                    if (gameState.isPlaying && !gameState.choiceSelected) {
+                        startTimer();
+                    }
+                }, 1400);
+            } catch (error) {
+                console.warn('次ラウンドエラー:', error);
             }
-            
-            gameState.timer = requestAnimationFrame(updateTimer);
+        }
+
+        // タイマー開始
+        function startTimer() {
+            try {
+                const totalTime = 10;
+                let startTime = performance.now();
+                
+                const progressFill = document.getElementById('progress-fill');
+                if (progressFill) {
+                    progressFill.style.width = '100%';
+                }
+                
+                function updateTimer() {
+                    if (!gameState.isPlaying || gameState.choiceSelected) {
+                        return;
+                    }
+                    
+                    const elapsed = performance.now() - startTime;
+                    const timeLeft = Math.max(0, (totalTime * 1000) - elapsed);
+                    
+                    // プログレスバーの幅を更新
+                    const percentage = (timeLeft / (totalTime * 1000)) * 100;
+                    if (progressFill) {
+                        progressFill.style.width = percentage + '%';
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        handleTimeUp();
+                    } else {
+                        gameState.timer = requestAnimationFrame(updateTimer);
+                    }
+                }
+                
+                gameState.timer = requestAnimationFrame(updateTimer);
+            } catch (error) {
+                console.warn('タイマー開始エラー:', error);
+            }
         }
 
         // 時間切れ処理
         function handleTimeUp() {
-            if (!gameState.isPlaying || gameState.choiceSelected) return;
-            
-            gameState.choiceSelected = true;
-            
-            // 時間切れ音を再生
-            SoundSystem.playTimeUp();
-            
-            // 選択肢を無効化
-            document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.disabled = true;
-                btn.style.opacity = '0.5';
-            });
-            
-            // 時間切れ（連続回答数をリセット）
-            gameState.streakCount = 0;
-            showResult(false, '時間切れ！');
-            gameState.totalAnswers++;
-            updateScore();
-            
-            // 1秒後に自動で次へ
-            setTimeout(() => {
-                if (gameState.currentRound >= gameState.totalRounds) {
-                    finishGame();
-                } else {
-                    nextRound();
-                }
-            }, 1500);
+            try {
+                if (!gameState.isPlaying || gameState.choiceSelected) return;
+                
+                gameState.choiceSelected = true;
+                clearAllTimers();
+                
+                document.querySelectorAll('.game-choice-button').forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                });
+                
+                showResult(false, '時間切れ！');
+                gameState.totalAnswers++;
+                updateScore();
+                
+                setTimeout(() => {
+                    if (gameState.currentRound >= gameState.totalRounds) {
+                        finishGame();
+                    } else {
+                        nextRound();
+                    }
+                }, 1500);
+            } catch (error) {
+                console.warn('時間切れ処理エラー:', error);
+            }
         }
 
         // 選択を行う
         function makeChoice(playerChoice) {
-            if (!gameState.isPlaying || gameState.choiceSelected) return;
-            
-            gameState.choiceSelected = true;
-            clearAllTimers();
-            
-            // クリック音を再生
-            SoundSystem.playClick();
-            
-            // 選択肢を無効化
-            document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.disabled = true;
-                btn.style.opacity = '0.5';
-            });
+            try {
+                if (!gameState.isPlaying || gameState.choiceSelected) return;
+                
+                gameState.choiceSelected = true;
+                clearAllTimers();
+                
+                SoundSystem.playClick();
+                
+                document.querySelectorAll('.game-choice-button').forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                });
 
-            // 正解判定
-            let correctChoice;
-            if (gameState.currentInstruction === 'win') {
-                correctChoice = getWinningHand(gameState.currentOpponentHand);
-            } else {
-                correctChoice = getLosingHand(gameState.currentOpponentHand);
-            }
-
-            const isCorrect = playerChoice === correctChoice;
-            gameState.totalAnswers++;
-            
-            if (isCorrect) {
-                gameState.correctAnswers++;
-                gameState.streakCount = (gameState.streakCount || 0) + 1;
-                gameState.maxStreak = Math.max(gameState.maxStreak || 0, gameState.streakCount);
-                SoundSystem.playCorrect(); // 正解音
-                showResult(true, `正解！`);
-            } else {
-                gameState.streakCount = 0;
-                SoundSystem.playIncorrect(); // 不正解音
-                showResult(false, `不正解！`);
-            }
-
-            updateScore();
-
-            // 1.5秒後に自動で次へ
-            setTimeout(() => {
-                if (gameState.currentRound >= gameState.totalRounds) {
-                    finishGame();
+                let correctChoice;
+                if (gameState.currentInstruction === 'win') {
+                    correctChoice = getWinningHand(gameState.currentOpponentHand);
                 } else {
-                    nextRound();
+                    correctChoice = getLosingHand(gameState.currentOpponentHand);
                 }
-            }, 1500);
+
+                const isCorrect = playerChoice === correctChoice;
+                gameState.totalAnswers++;
+                
+                if (isCorrect) {
+                    gameState.correctAnswers++;
+                    SoundSystem.playCorrect();
+                    showResult(true, '正解！');
+                } else {
+                    SoundSystem.playIncorrect();
+                    showResult(false, '不正解！');
+                }
+
+                updateScore();
+
+                setTimeout(() => {
+                    if (gameState.currentRound >= gameState.totalRounds) {
+                        finishGame();
+                    } else {
+                        nextRound();
+                    }
+                }, 1500);
+            } catch (error) {
+                console.warn('選択処理エラー:', error);
+            }
         }
 
-        // 結果表示（正解・不正解時のみシンプル表示）
+        // 結果表示
         function showResult(isCorrect, message) {
-            const resultElement = document.getElementById('result');
-            if (resultElement) {
-                resultElement.textContent = message;
-                resultElement.className = `result ${isCorrect ? 'correct' : 'incorrect'} show`;
+            try {
+                const resultElement = document.getElementById('result');
+                if (resultElement) {
+                    resultElement.textContent = message;
+                    resultElement.className = `result ${isCorrect ? 'correct' : 'incorrect'} show`;
+                }
+            } catch (error) {
+                console.warn('結果表示エラー:', error);
             }
         }
 
         // ゲーム終了
         function finishGame() {
-            gameState.isPlaying = false;
-            gameState.endTime = new Date();
-            clearAllTimers();
-            
-            // 時間計算を確実に行う
-            const startTime = gameState.startTime;
-            const endTime = gameState.endTime;
-            const timeDifference = endTime.getTime() - startTime.getTime();
-            const totalTimeSeconds = Math.round(timeDifference / 1000);
-            
-            // 正解率計算
-            const currentAccuracy = gameState.totalAnswers > 0 
-                ? Math.round((gameState.correctAnswers / gameState.totalAnswers) * 100)
-                : 100;
-            
-            let hasNewRecord = false;
-            let newRecordMessage = '';
-            
-            // 10問全正解時のみ記録
-            if (gameState.correctAnswers === 10) {
-                bestRecords.perfectGames++;
+            try {
+                gameState.isPlaying = false;
+                gameState.endTime = new Date();
+                clearAllTimers();
                 
-                if (bestRecords.perfectBestTime === null || totalTimeSeconds < bestRecords.perfectBestTime) {
-                    if (bestRecords.perfectBestTime === null) {
-                        newRecordMessage = '初回全正解記録達成！';
-                    } else {
-                        newRecordMessage = '全正解最短記録更新！';
+                const totalTimeSeconds = Math.round((gameState.endTime.getTime() - gameState.startTime.getTime()) / 1000);
+                
+                let hasNewRecord = false;
+                
+                if (gameState.correctAnswers === 10) {
+                    const currentDifficultyRecord = bestRecords[gameState.difficulty];
+                    currentDifficultyRecord.perfectGames++;
+                    
+                    if (currentDifficultyRecord.perfectBestTime === null || totalTimeSeconds < currentDifficultyRecord.perfectBestTime) {
+                        currentDifficultyRecord.perfectBestTime = totalTimeSeconds;
+                        hasNewRecord = true;
                     }
-                    bestRecords.perfectBestTime = totalTimeSeconds;
-                    hasNewRecord = true;
+                    
+                    saveRecords();
                 }
                 
-                // 記録を更新（メモリ内）
-                saveRecords();
-            }
-            
-            // 画面表示切り替え
-            document.getElementById('game-area').classList.add('hidden');
-            document.getElementById('final-result').classList.remove('hidden');
-            
-            // 今回の結果を表示
-            const totalTimeElem = document.getElementById('total-time');
-            const resultSummary = document.getElementById('final-result-summary');
-            
-            if (totalTimeElem) totalTimeElem.textContent = `総時間: ${totalTimeSeconds}秒`;
-            if (resultSummary) resultSummary.textContent = `正解数: ${gameState.correctAnswers}/10`;
-            
-            // 最高記録セクションの表示/非表示を制御
-            const bestRecordSection = document.getElementById('best-record-section');
-            
-            // 全正解記録がある場合のみ表示
-            if (bestRecords.perfectGames > 0 && bestRecords.perfectBestTime !== null) {
-                if (bestRecordSection) {
-                    bestRecordSection.classList.remove('hidden');
-                    
-                    // 最高記録を表示
-                    const perfectBestTimeElem = document.getElementById('perfect-best-time');
-                    const perfectGamesElem = document.getElementById('perfect-games');
-                    
-                    if (perfectBestTimeElem) {
-                        const timeText = bestRecords.perfectBestTime + '秒';
-                        perfectBestTimeElem.textContent = timeText;
+                // 画面切り替え - ゲーム画面を非表示にして結果画面を表示
+                document.getElementById('game-area').classList.add('hidden');
+                document.getElementById('final-result').classList.remove('hidden');
+                document.getElementById('final-result').classList.add('show');
+                
+                const totalTimeElem = document.getElementById('total-time');
+                const resultSummary = document.getElementById('final-result-summary');
+                const difficultyDisplay = document.getElementById('final-difficulty-display');
+                
+                if (totalTimeElem) totalTimeElem.textContent = `${totalTimeSeconds}秒`;
+                if (resultSummary) resultSummary.textContent = `正解数: ${gameState.correctAnswers}/10`;
+                if (difficultyDisplay) {
+                    difficultyDisplay.textContent = gameState.difficulty === 'expert' ? '🔴 上級' : '🟢 通常';
+                }
+                
+                const bestRecordSection = document.getElementById('best-record-section');
+                const currentDifficultyRecord = bestRecords[gameState.difficulty];
+                
+                if (currentDifficultyRecord.perfectGames > 0 && currentDifficultyRecord.perfectBestTime !== null) {
+                    if (bestRecordSection) {
+                        bestRecordSection.classList.remove('hidden');
+                        
+                        const perfectBestTimeElem = document.getElementById('perfect-best-time');
+                        const perfectGamesElem = document.getElementById('perfect-games');
+                        
+                        if (perfectBestTimeElem) {
+                            perfectBestTimeElem.textContent = currentDifficultyRecord.perfectBestTime + '秒';
+                        }
+                        
+                        if (perfectGamesElem) {
+                            perfectGamesElem.textContent = currentDifficultyRecord.perfectGames.toString();
+                        }
                     }
-                    
-                    if (perfectGamesElem) {
-                        perfectGamesElem.textContent = bestRecords.perfectGames.toString();
+                } else {
+                    if (bestRecordSection) {
+                        bestRecordSection.classList.add('hidden');
                     }
                 }
-            } else {
-                // 記録がない場合は非表示
-                if (bestRecordSection) {
-                    bestRecordSection.classList.add('hidden');
+                
+                const recordUpdateElem = document.getElementById('record-update');
+                if (hasNewRecord) {
+                    if (recordUpdateElem) {
+                        recordUpdateElem.classList.remove('hidden');
+                    }
+                    SoundSystem.playNewRecord();
+                } else {
+                    if (recordUpdateElem) {
+                        recordUpdateElem.classList.add('hidden');
+                    }
+                    SoundSystem.playGameEnd();
                 }
+            } catch (error) {
+                console.warn('ゲーム終了エラー:', error);
             }
-            
-            // 新記録表示
-            const recordUpdateElem = document.getElementById('record-update');
-            if (hasNewRecord && newRecordMessage !== '') {
-                if (recordUpdateElem) {
-                    recordUpdateElem.textContent = `🎊 ${newRecordMessage}`;
-                    recordUpdateElem.classList.remove('hidden');
-                }
-                // 新記録音を再生
-                SoundSystem.playNewRecord();
-            } else {
-                if (recordUpdateElem) {
-                    recordUpdateElem.classList.add('hidden');
-                }
-                // 通常のゲーム終了音を再生
-                SoundSystem.playGameEnd();
-            }
-        }
-
-        // イベントハンドラー（効果音付き）
-        async function handleStartClick() {
-            await SoundSystem.init();
-            SoundSystem.playClick();
-            startGame();
-        }
-
-        function handleChoiceClick(choice) {
-            makeChoice(choice);
-        }
-
-        async function handleNextGameClick() {
-            await SoundSystem.init();
-            SoundSystem.playClick();
-            startNextGame();
-        }
-
-        async function handleBackClick() {
-            await SoundSystem.init();
-            SoundSystem.playClick();
-            resetGame();
         }
 
         // ゲームリセット
         async function resetGame() {
-            // クリック音を再生
-            await SoundSystem.init();
-            SoundSystem.playClick();
-            
-            clearAllTimers();
-            gameState.isPlaying = false;
-            gameState.choiceSelected = false;
-            
-            document.getElementById('explanation').classList.remove('hidden');
-            document.getElementById('start-btn').classList.remove('hidden');
-            document.getElementById('game-area').classList.add('hidden');
-            document.getElementById('final-result').classList.add('hidden');
-            
-            // ボタンを有効化
-            setButtonsEnabled(true);
-            
-            // スコアをリセット
-            gameState.correctAnswers = 0;
-            gameState.totalAnswers = 0;
-            gameState.streakCount = 0;
-            updateScore();
+            try {
+                await SoundSystem.init();
+                SoundSystem.playClick();
+                
+                clearAllTimers();
+                gameState.isPlaying = false;
+                gameState.choiceSelected = false;
+                
+                // メイン画面に戻る - 結果画面を確実に非表示
+                document.getElementById('explanation').classList.remove('hidden');
+                document.getElementById('main-menu').classList.remove('hidden');
+                document.getElementById('game-area').classList.add('hidden');
+                document.getElementById('final-result').classList.add('hidden');
+                document.getElementById('final-result').classList.remove('show');
+                
+                // 難易度選択をリセット
+                gameState.difficulty = null;
+                document.getElementById('normal-btn').classList.remove('selected');
+                document.getElementById('expert-btn').classList.remove('selected');
+                document.getElementById('current-difficulty').textContent = '難易度を選択してください';
+                
+                // スタートボタンを無効化
+                const startBtn = document.getElementById('start-btn');
+                if (startBtn) {
+                    startBtn.disabled = true;
+                    startBtn.style.opacity = '0.5';
+                }
+                
+                // スコアをリセット
+                gameState.correctAnswers = 0;
+                gameState.totalAnswers = 0;
+                updateScore();
+            } catch (error) {
+                console.warn('ゲームリセットエラー:', error);
+            }
         }
 
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
-            loadRecords(); // 記録を確認
-            updateScore(); // スコア表示を更新
-            
-            // ボタンにイベントリスナーを追加（重複クリック防止）
-            const startBtn = document.getElementById('start-btn');
-            if (startBtn) {
-                startBtn.addEventListener('click', async function(e) {
-                    e.preventDefault();
-                    if (!this.disabled) {
-                        await startGame();
-                    }
-                });
+            try {
+                loadRecords();
+                updateScore();
+                
+                // 初期状態で結果画面を確実に非表示
+                const finalResult = document.getElementById('final-result');
+                if (finalResult) {
+                    finalResult.classList.add('hidden');
+                    finalResult.classList.remove('show');
+                }
+                
+                // イベントリスナーを追加
+                const normalBtn = document.getElementById('normal-btn');
+                const expertBtn = document.getElementById('expert-btn');
+                const startBtn = document.getElementById('start-btn');
+                const backToMainBtn = document.getElementById('back-to-main-btn');
+                const restartBtn = document.getElementById('restart-btn');
+                const finalBackBtn = document.getElementById('final-back-btn');
+                
+                if (normalBtn) {
+                    normalBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        selectDifficulty('normal');
+                    });
+                }
+                
+                if (expertBtn) {
+                    expertBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        selectDifficulty('expert');
+                    });
+                }
+                
+                if (startBtn) {
+                    startBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (!startBtn.disabled && gameState.difficulty) {
+                            startGame();
+                        }
+                    });
+                }
+                
+                if (backToMainBtn) {
+                    backToMainBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        resetGame();
+                    });
+                }
+                
+                if (restartBtn) {
+                    restartBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        startNextGame();
+                    });
+                }
+                
+                if (finalBackBtn) {
+                    finalBackBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        resetGame();
+                    });
+                }
+            } catch (error) {
+                console.warn('初期化エラー:', error);
             }
         });
-
-        // 初期化
-        loadRecords();
-        updateScore();
     </script>
 </body>
 </html>
