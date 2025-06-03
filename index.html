@@ -747,35 +747,45 @@
             
             let info = '<strong>🔍 iPhone デバッグ情報</strong><br><br>';
             
-            // ブラウザ情報
-            info += '<strong>📱 ブラウザ:</strong><br>';
-            info += navigator.userAgent.substring(0, 100) + '...<br><br>';
+            // デバイス判定
+            info += '<strong>📱 デバイス判定:</strong><br>';
+            info += 'iOS検出: ' + (isIOSDevice() ? '✅ iPhone/iOS' : '❌ PC/Android') + '<br>';
+            info += 'ユーザーエージェント: ' + navigator.userAgent.substring(0, 80) + '...<br><br>';
             
             // 保存方式の判定
             info += '<strong>💾 使用している保存方式:</strong><br>';
-            let storageMethod = 'URL保存';
-            try {
-                if (typeof(Storage) !== "undefined") {
-                    localStorage.setItem('test', 'test');
-                    localStorage.removeItem('test');
-                    storageMethod = 'localStorage';
+            let storageMethod = isIOSDevice() ? 'URL保存（強制）' : 'localStorage優先';
+            
+            // localStorage テスト（iPhone以外の場合）
+            if (!isIOSDevice()) {
+                try {
+                    if (typeof(Storage) !== "undefined") {
+                        localStorage.setItem('test', 'test');
+                        localStorage.removeItem('test');
+                        storageMethod = 'localStorage';
+                    }
+                } catch (e) {
+                    storageMethod = 'URL保存（フォールバック）';
                 }
-            } catch (e) {
-                // localStorage使用不可
             }
+            
             info += storageMethod + '<br><br>';
             
             // localStorage サポート確認
             info += '<strong>💾 ストレージサポート:</strong><br>';
             info += 'localStorage: ' + (typeof(Storage) !== "undefined" ? '✅ サポート' : '❌ 非サポート') + '<br>';
             
-            // プライベートブラウジング検出
-            try {
-                localStorage.setItem('test', 'test');
-                localStorage.removeItem('test');
-                info += 'localStorage書き込み: ✅ 正常<br>';
-            } catch (e) {
-                info += 'localStorage書き込み: ❌ エラー (' + e.message + ')<br>';
+            // プライベートブラウジング検出（iPhone以外）
+            if (!isIOSDevice()) {
+                try {
+                    localStorage.setItem('test', 'test');
+                    localStorage.removeItem('test');
+                    info += 'localStorage書き込み: ✅ 正常<br>';
+                } catch (e) {
+                    info += 'localStorage書き込み: ❌ エラー (' + e.message + ')<br>';
+                }
+            } else {
+                info += 'localStorage書き込み: ⏭️ iPhone検出によりスキップ<br>';
             }
             
             // URL パラメータ確認
@@ -793,7 +803,7 @@
             info += JSON.stringify(bestRecords, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;') + '<br><br>';
             
             // 保存されているデータ
-            if (storageMethod === 'localStorage') {
+            if (storageMethod.includes('localStorage')) {
                 info += '<strong>💿 localStorage データ:</strong><br>';
                 try {
                     const saved = localStorage.getItem('janken-game-records');
@@ -1005,11 +1015,25 @@
             }
         }
 
+        // iPhone/iOS検出関数
+        function isIOSDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod|safari/.test(userAgent) && /mobile|tablet/.test(userAgent);
+        }
+
         // 統合された記録管理関数
         function loadRecords() {
             console.log('=== 記録読み込み開始 ===');
+            console.log('デバイス判定:', isIOSDevice() ? 'iOS/iPhone' : 'PC/Android');
             
-            // まずlocalStorageから試す（PC用）
+            // iPhone/iOSの場合は強制的にURL保存を使用
+            if (isIOSDevice()) {
+                console.log('📱 iPhone検出: URL保存方式を使用');
+                loadRecordsFromURL();
+                return;
+            }
+            
+            // PC/Androidの場合はlocalStorageから試す
             try {
                 if (typeof(Storage) !== "undefined") {
                     const saved = localStorage.getItem('janken-game-records');
@@ -1033,16 +1057,25 @@
                 console.warn('localStorage 読み込み失敗:', error);
             }
             
-            // localStorageが使えない場合はURLから読み込み（iPhone用）
+            // localStorageが使えない場合はURLから読み込み
             loadRecordsFromURL();
         }
 
         function saveRecords() {
             console.log('=== 記録保存開始 ===');
+            console.log('デバイス判定:', isIOSDevice() ? 'iOS/iPhone' : 'PC/Android');
             
-            // まずlocalStorageに保存を試す（PC用）
+            // iPhone/iOSの場合は強制的にURL保存を使用
+            if (isIOSDevice()) {
+                console.log('📱 iPhone検出: URL保存方式を強制使用');
+                saveRecordsToURL();
+                return;
+            }
+            
+            // PC/Androidの場合はlocalStorageに保存を試す
             try {
                 if (typeof(Storage) !== "undefined") {
+                    // 書き込みテスト
                     localStorage.setItem('test', 'test');
                     localStorage.removeItem('test');
                     
@@ -1050,19 +1083,21 @@
                     localStorage.setItem('janken-game-records', dataToSave);
                     console.log('localStorage に保存成功:', bestRecords);
                     
-                    // 保存確認
+                    // 保存確認 - 実際に読み込んで確認
                     const verification = localStorage.getItem('janken-game-records');
                     if (verification === dataToSave) {
                         console.log('✅ localStorage 保存確認完了');
                         return; // localStorage で保存できた場合は終了
+                    } else {
+                        console.warn('localStorage 保存失敗: データ不一致');
                     }
                 }
             } catch (error) {
                 console.warn('localStorage 保存失敗:', error);
             }
             
-            // localStorageが使えない場合はURLに保存（iPhone用）
-            console.log('📱 iPhone用 URL保存を実行');
+            // localStorageが使えない場合はURLに保存
+            console.log('💾 URL保存にフォールバック');
             saveRecordsToURL();
         }
 
